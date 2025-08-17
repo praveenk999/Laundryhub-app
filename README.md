@@ -1,7 +1,9 @@
+#  <img src="https://github.com/NightFury742/LaundriX/assets/119070798/5afc3cc0-69c9-45d9-83ff-faafbc888a8d" height="40px"> LaundryHub
 
 LaundryHub is a laundry booking system designed for our institute hostels, allowing students to book hassle-free laundry appointments through an online platform. This system streamlines the process of getting laundry done, making the experience seamless and efficient. It is designed for both students and launderers, making it a fully online solution for the cause of laundry.
 <Br><Br>
 
+# <img src="https://github.com/NightFury742/LaundriX/assets/119070798/ec2ddfa4-c318-4a76-9296-872e8d5fab3f" height="30px"> Features
 
 * **User Authentication:** Sign in using your created account.
 * **Service Selection**: Choose from our range of services: Wash & Iron, PowerClean, and DryClean.
@@ -27,11 +29,14 @@ LaundryHub is a laundry booking system designed for our institute hostels, allow
 <Br><Br>
 
 
+# <img src="https://github.com/NightFury742/LaundriX/assets/119070798/6f622e92-9e0d-492c-a901-c5969a1140c0" height="35"> Tech Stack
 
+## Frontend
 * React JS
 * Tailwind css
 * Framer Motion
 
+## Backend
 * Express JS
 * Mongo DB
 * Razorpay
@@ -39,6 +44,7 @@ LaundryHub is a laundry booking system designed for our institute hostels, allow
 
 <Br><Br>
 
+# <img height="37px" src="https://github.com/NightFury742/LaundriX/assets/119070798/6c1290e3-d35c-4828-8023-ba99194b3991"> Project Initialization
 1. Fork this repository.
 2. Clone the forked repository locally.
      ```
@@ -74,5 +80,6 @@ LaundryHub is a laundry booking system designed for our institute hostels, allow
      ```
 
 
+# <img height="40px" src="https://github.com/NightFury742/LaundriX/assets/119070798/143a52c0-b60d-4f57-b38f-3e5156e124d9"> License
 
 MIT License
