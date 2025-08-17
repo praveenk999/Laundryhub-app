@@ -1,3 +1,5 @@
+
+
 // import {
 //   Accordion,
 //   AccordionButton,
@@ -10,9 +12,11 @@
 //   Checkbox,
 //   CheckboxGroup,
 //   Divider,
+//   Flex,
 //   Grid,
 //   GridItem,
 //   HStack,
+//   IconButton,
 //   Modal,
 //   ModalBody,
 //   ModalCloseButton,
@@ -35,6 +39,7 @@
 //   useToast,
 // } from '@chakra-ui/react';
 // import React, { useEffect, useState } from 'react';
+// import { MdDelete } from 'react-icons/md';
 // import useAuthStore from '../Store/AuthStore';
 // import {
 //   getAllOrders,
@@ -54,6 +59,7 @@
 //   const { userName } = useAuthStore((state) => ({
 //     userName: state.userName,
 //   }));
+  
 //   const handleToast = (title, description, status) => {
 //     toast({
 //       position: 'top',
@@ -84,6 +90,10 @@
 //     onOpen();
 //   };
 
+//   const getTotalQuantity = (items) => {
+//     return items.reduce((total, item) => total + item.quantity, 0);
+//   };
+
 //   const handleFilterChange = (value) => {
 //     if (value === 'all') {
 //       setSelectedFilters(['all']);
@@ -94,68 +104,6 @@
 //           : [...prev.filter((f) => f !== 'all'), value];
 //         return newFilters.length === 0 ? ['all'] : newFilters;
 //       });
-//     }
-//   };
-
-//   const handleUpdateAcceptedStatus = async (order_id) => {
-//     try {
-//       const response = await updateAcceptedStatus(order_id);
-
-//       if (response.status === 200) {
-//         const notification = {
-//           launderer: userName,
-//           message: `Your order with Order ID: ${order_id} has been accepted.`,
-//           student: '', // need to query the student username from the order_id
-//           orderId: order_id,
-//         };
-//         const notifResponse = await postNotif(notification);
-
-//         if (notifResponse.status !== 500) {
-//           console.log(notifResponse);
-//         }
-//         setOrders((prevOrders) => {
-//           return prevOrders.map((order) => {
-//             if (order._id === order_id) {
-//               return { ...order, acceptedStatus: true };
-//             }
-//             return order;
-//           });
-//         });
-//         onClose();
-//       }
-//     } catch (err) {
-//       handleToast('Some Error Occurred', err.message, 'error');
-//     }
-//   };
-
-//   const handleUpdateDeliveredStatus = async (order_id) => {
-//     try {
-//       const response = await updateDeliveryStatus(order_id);
-
-//       if (response.status === 200) {
-//         const notification = {
-//           launderer: userName,
-//           message: `Your order with Order ID: ${order_id} has been delivered.`,
-//           student: '', // need to query the student username from the order_id
-//           orderId: order_id,
-//         };
-//         const notifResponse = await postNotif(notification);
-
-//         if (notifResponse.status !== 500) {
-//           console.log(notifResponse);
-//         }
-//         setOrders((prevOrders) => {
-//           return prevOrders.map((order) => {
-//             if (order._id === order_id) {
-//               return { ...order, deliveredStatus: true };
-//             }
-//             return order;
-//           });
-//         });
-//         onClose();
-//       }
-//     } catch (err) {
-//       handleToast('Some Error Occurred', err.message, 'error');
 //     }
 //   };
 
@@ -184,7 +132,7 @@
 //   }
 
 //   return (
-//     <VStack align="start" gap={12} ml="8rem">
+//     <VStack align="start" gap={14} ml="8rem" h="100vh" overflow="hidden">
 //       <Text fontSize="2rem" fontWeight="bold">
 //         Order Details:
 //       </Text>
@@ -232,68 +180,87 @@
 //         </HStack>
 //       </CheckboxGroup>
 //       <Box
-//         w="93rem"
-//         overflowX="scroll"
+//         w="75vw"
+//         h="calc(100vh - 300px)"
+//         overflowX="auto"
+//         overflowY="auto"
 //         css={{
 //           '&::-webkit-scrollbar': {
-//             display: 'none',
+//             width: '8px',
+//             height: '8px',
 //           },
-//           'scrollbar-width': 'none',
+//           '&::-webkit-scrollbar-track': {
+//             background: '#f1f1f1',
+//             borderRadius: '10px',
+//           },
+//           '&::-webkit-scrollbar-thumb': {
+//             background: '#888',
+//             borderRadius: '10px',
+//           },
+//           '&::-webkit-scrollbar-thumb:hover': {
+//             background: '#555',
+//           },
 //         }}
 //       >
-//         <Box maxH="70vh" overflowY="scroll">
-//           <Table variant="simple">
-//             <Thead>
-//               <Tr>
-//                 <Th textAlign="center">Order ID</Th>
-//                 <Th textAlign="center">Order Total</Th>
-//                 <Th textAlign="center">Student Username</Th>
-//                 <Th textAlign="center">Hostel</Th>
-//                 <Th textAlign="center">Delivery Date</Th>
-//                 <Th textAlign="center">Pickup Status</Th>
-//                 <Th textAlign="center">Payment Status</Th>
-//               </Tr>
-//             </Thead>
-//             <Tbody>
-//               {filteredOrders.map((order) => (
-//                 <Tr key={order._id}>
-//                   <Td textAlign="center">{order._id}</Td>
-//                   <Td textAlign="center">₹{order.orderTotal}</Td>
-//                   <Td textAlign="center">{order.user.username}</Td>
-//                   <Td textAlign="center">{order.user.hostel}</Td>
-//                   <Td textAlign="center">{order.deliveryDate}</Td>
-//                   <Td textAlign="center">
-//                     <Tag
-//                       size="lg"
-//                       colorScheme={order.pickUpStatus ? 'green' : 'red'}
-//                     >
-//                       {order.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
-//                     </Tag>
-//                   </Td>
-//                   <Td textAlign="center">
-//                     <Tag size="lg" colorScheme={order.paid ? 'green' : 'red'}>
-//                       {order.paid ? 'Paid' : 'Not Paid'}
-//                     </Tag>
-//                   </Td>
-//                   <Td textAlign="center">
+//         <Table variant="simple" size="sm">
+//           <Thead position="sticky" top={0} bg="white" zIndex={1}>
+//             <Tr>
+//               <Th textAlign="right">Order ID</Th>
+//               <Th textAlign="right">Order Total</Th>
+//               <Th textAlign="right">Pickup Date</Th>
+//               <Th textAlign="right">Total Items</Th>
+//               <Th textAlign="right">Accepted Status</Th>
+//               <Th textAlign="right">Delivery Status</Th>
+//               <Th textAlign="right">Actions</Th>
+//             </Tr>
+//           </Thead>
+//           <Tbody>
+//             {filteredOrders.map((order) => (
+//               <Tr key={order._id}>
+//                 <Td textAlign="right">{order._id}</Td>
+//                 <Td textAlign="right">₹{order.orderTotal}</Td>
+//                 <Td textAlign="right">{order.pickupDate}</Td>
+//                 <Td textAlign="right">{getTotalQuantity(order.items)}</Td>
+//                 <Td textAlign="right">
+//                   <Tag
+//                     size="lg"
+//                     colorScheme={order.acceptedStatus ? 'green' : 'red'}
+//                   >
+//                     {order.acceptedStatus ? 'Accepted' : 'Not Accepted'}
+//                   </Tag>
+//                 </Td>
+//                 <Td textAlign="right">
+//                   <Tag
+//                     size="lg"
+//                     colorScheme={order.deliveredStatus ? 'green' : 'red'}
+//                   >
+//                     {order.deliveredStatus ? 'Delivered' : 'Not Delivered'}
+//                   </Tag>
+//                 </Td>
+//                 <Td textAlign="right">
+//                   <Flex gap={4} w="fit-content" justify="flex-end">
 //                     <Button
 //                       color="#ce1567"
 //                       onClick={() => handleCardClick(order)}
 //                     >
 //                       View Details
 //                     </Button>
-//                   </Td>
-//                 </Tr>
-//               ))}
-//             </Tbody>
-//           </Table>
-//         </Box>
+//                   </Flex>
+//                 </Td>
+//               </Tr>
+//             ))}
+//           </Tbody>
+//         </Table>
 //       </Box>
-//       {/* Order Details Modal */}
+
 //       {selectedOrder && (
 //         <Modal isOpen={isOpen} onClose={onClose}>
 //           <ModalOverlay />
-//           <ModalContent border="2px solid #ce1567" borderRadius="0.5rem">
+//           <ModalContent
+//             width="90%"
+//             border="2px solid #ce1567"
+//             borderRadius="0.5rem"
+//           >
 //             <ModalHeader />
 //             <ModalCloseButton />
 //             <ModalBody>
@@ -316,6 +283,11 @@
 //                   <Text>
 //                     <strong>Contact No.:</strong>{' '}
 //                     {selectedOrder.user.phone_number}
+//                   </Text>
+//                 </GridItem>
+//                 <GridItem>
+//                   <Text>
+//                     <strong>Roll No.:</strong> {selectedOrder.user.roll_number}
 //                   </Text>
 //                 </GridItem>
 //                 <GridItem>
@@ -380,15 +352,6 @@
 //                   >
 //                     {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
 //                   </Tag>
-//                   <Switch
-//                     size="md"
-//                     ml={2}
-//                     colorScheme="green"
-//                     display={selectedOrder.acceptedStatus ? 'none' : ''}
-//                     onChange={() =>
-//                       handleUpdateAcceptedStatus(selectedOrder._id)
-//                     }
-//                   />
 //                 </GridItem>
 //                 <GridItem>
 //                   <Text>
@@ -404,21 +367,6 @@
 //                       ? 'Delivered'
 //                       : 'Not Delivered'}
 //                   </Tag>
-//                   <Switch
-//                     size="md"
-//                     ml={2}
-//                     colorScheme="green"
-//                     display={
-//                       !selectedOrder.pickUpStatus ||
-//                       !selectedOrder.acceptedStatus ||
-//                       selectedOrder.deliveredStatus
-//                         ? 'none'
-//                         : ''
-//                     }
-//                     onChange={() =>
-//                       handleUpdateDeliveredStatus(selectedOrder._id)
-//                     }
-//                   />
 //                 </GridItem>
 //                 <GridItem>
 //                   <Text>
@@ -538,6 +486,7 @@
 
 // export default LaundererOrdersDetail;
 
+
 import {
   Accordion,
   AccordionButton,
@@ -642,6 +591,71 @@ function LaundererOrdersDetail() {
           : [...prev.filter((f) => f !== 'all'), value];
         return newFilters.length === 0 ? ['all'] : newFilters;
       });
+    }
+  };
+
+  // Add toggle handler functions
+  const handleUpdateAcceptedStatus = async (order_id) => {
+    try {
+      const response = await updateAcceptedStatus(order_id);
+
+      if (response.status === 200) {
+        const notification = {
+          launderer: userName,
+          message: `Your order with Order ID: ${order_id} has been accepted.`,
+          student: '',
+          orderId: order_id,
+        };
+        const notifResponse = await postNotif(notification);
+
+        if (notifResponse.status !== 500) {
+          console.log(notifResponse);
+        }
+        setOrders((prevOrders) => {
+          return prevOrders.map((order) => {
+            if (order._id === order_id) {
+              return { ...order, acceptedStatus: true };
+            }
+            return order;
+          });
+        });
+        handleToast('Success', 'Order accepted successfully', 'success');
+        onClose();
+      }
+    } catch (err) {
+      handleToast('Some Error Occurred', err.message, 'error');
+    }
+  };
+
+  const handleUpdateDeliveredStatus = async (order_id) => {
+    try {
+      const response = await updateDeliveryStatus(order_id);
+
+      if (response.status === 200) {
+        const notification = {
+          launderer: userName,
+          message: `Your order with Order ID: ${order_id} has been delivered.`,
+          student: '',
+          orderId: order_id,
+        };
+        const notifResponse = await postNotif(notification);
+
+        if (notifResponse.status !== 500) {
+          console.log(notifResponse);
+        }
+        setOrders((prevOrders) => {
+          return prevOrders.map((order) => {
+            if (order._id === order_id) {
+              return { ...order, deliveredStatus: true };
+            }
+            return order;
+          });
+        });
+        handleToast('Success', 'Order marked as delivered', 'success');
+        onClose();
+      }
+    } catch (err) {
+      handleToast('Some Error Occurred', err.message, 'error');
     }
   };
 
@@ -814,28 +828,28 @@ function LaundererOrdersDetail() {
                 <GridItem>
                   <Text>
                     <strong>Student Username:</strong>{' '}
-                    {selectedOrder.user.username}
+                    {selectedOrder.user?.username}
                   </Text>
                 </GridItem>
                 <GridItem>
                   <Text>
                     <strong>Contact No.:</strong>{' '}
-                    {selectedOrder.user.phone_number}
+                    {selectedOrder.user?.phone_number}
                   </Text>
                 </GridItem>
                 <GridItem>
                   <Text>
-                    <strong>Roll No.:</strong> {selectedOrder.user.roll_number}
+                    <strong>Roll No.:</strong> {selectedOrder.user?.roll_number}
                   </Text>
                 </GridItem>
                 <GridItem>
                   <Text>
-                    <strong>Hostel:</strong> {selectedOrder.user.hostel}
+                    <strong>Hostel:</strong> {selectedOrder.user?.hostel}
                   </Text>
                 </GridItem>
                 <GridItem>
                   <Text>
-                    <strong>Room No.:</strong> {selectedOrder.user.room_number}
+                    <strong>Room No.:</strong> {selectedOrder.user?.room_number}
                   </Text>
                 </GridItem>
               </Grid>
@@ -879,54 +893,79 @@ function LaundererOrdersDetail() {
                 </GridItem>
               </Grid>
               <Divider my={2} />
+              {/* Status section with toggles */}
               <Grid templateColumns="repeat(2, 1fr)" gap={4} my={4}>
                 <GridItem>
-                  <Text>
-                    <strong>Accepted Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={selectedOrder.acceptedStatus ? 'green' : 'red'}
-                  >
-                    {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-                  </Tag>
+                  <HStack justify="space-between">
+                    <VStack align="start">
+                      <Text>
+                        <strong>Accepted Status:</strong>
+                      </Text>
+                      <Tag
+                        size="lg"
+                        colorScheme={selectedOrder.acceptedStatus ? 'green' : 'red'}
+                      >
+                        {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
+                      </Tag>
+                    </VStack>
+                    {!selectedOrder.acceptedStatus && (
+                      <Switch
+                        size="md"
+                        colorScheme="green"
+                        onChange={() => handleUpdateAcceptedStatus(selectedOrder._id)}
+                      />
+                    )}
+                  </HStack>
                 </GridItem>
                 <GridItem>
-                  <Text>
-                    <strong>Delivery Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={
-                      selectedOrder.deliveredStatus ? 'green' : 'red'
-                    }
-                  >
-                    {selectedOrder.deliveredStatus
-                      ? 'Delivered'
-                      : 'Not Delivered'}
-                  </Tag>
+                  <HStack justify="space-between">
+                    <VStack align="start">
+                      <Text>
+                        <strong>Delivery Status:</strong>
+                      </Text>
+                      <Tag
+                        size="lg"
+                        colorScheme={selectedOrder.deliveredStatus ? 'green' : 'red'}
+                      >
+                        {selectedOrder.deliveredStatus ? 'Delivered' : 'Not Delivered'}
+                      </Tag>
+                    </VStack>
+                    {selectedOrder.acceptedStatus && 
+                     selectedOrder.pickUpStatus && 
+                     !selectedOrder.deliveredStatus && (
+                      <Switch
+                        size="md"
+                        colorScheme="green"
+                        onChange={() => handleUpdateDeliveredStatus(selectedOrder._id)}
+                      />
+                    )}
+                  </HStack>
                 </GridItem>
                 <GridItem>
-                  <Text>
-                    <strong>Pickup Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={selectedOrder.pickUpStatus ? 'green' : 'red'}
-                  >
-                    {selectedOrder.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
-                  </Tag>
+                  <VStack align="start">
+                    <Text>
+                      <strong>Pickup Status:</strong>
+                    </Text>
+                    <Tag
+                      size="lg"
+                      colorScheme={selectedOrder.pickUpStatus ? 'green' : 'red'}
+                    >
+                      {selectedOrder.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
+                    </Tag>
+                  </VStack>
                 </GridItem>
                 <GridItem>
-                  <Text>
-                    <strong>Payment Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={selectedOrder.paid ? 'green' : 'red'}
-                  >
-                    {selectedOrder.paid ? 'Paid' : 'Pending'}
-                  </Tag>
+                  <VStack align="start">
+                    <Text>
+                      <strong>Payment Status:</strong>
+                    </Text>
+                    <Tag
+                      size="lg"
+                      colorScheme={selectedOrder.paid ? 'green' : 'red'}
+                    >
+                      {selectedOrder.paid ? 'Paid' : 'Pending'}
+                    </Tag>
+                  </VStack>
                 </GridItem>
               </Grid>
               <Divider my={2} />
