@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
 
-// @desc    Get all orders
-// @route   GET /allorders
-// @access  Private
-// when accepted and delivery status are marked as true, the orders will be deleted automatically from the database.
+
+
+
+
 const getAllOrders = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -15,7 +15,7 @@ const getAllOrders = async (req, resp) => {
         message: 'User does not have access rights',
       });
     } else {
-      // the role is launderer, and the route can now be accessed.
+      
       const orders = await Order.find({
         launderer: decodedToken.username,
       }).populate('user', '-password -__v');
@@ -32,9 +32,9 @@ const getAllOrders = async (req, resp) => {
   }
 };
 
-// @desc    Get orders of a particular user
-// @route   GET /orders/:username
-// @access  Private
+
+
+
 const getOrdersByStudent = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -44,8 +44,8 @@ const getOrdersByStudent = async (req, resp) => {
         message: 'User does not have access rights',
       });
     } else {
-      // the role is launderer, and the route can now be accessed
-      // Get the username of the student, search in the database for the orders with the username
+      
+      
       const { username } = req.params;
       const user = await User.findOne({ username });
       const userId = user._id;
@@ -63,9 +63,9 @@ const getOrdersByStudent = async (req, resp) => {
   }
 };
 
-// @desc    Update Order status as accepted by the launderer
-// @route   PUT /acceptorder/:order_id
-// @access  Private
+
+
+
 const updateOrderAccept = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -75,8 +75,8 @@ const updateOrderAccept = async (req, resp) => {
         message: 'User does not have access rights',
       });
     } else {
-      // the role is launderer, and the route can now be accessed.
-      // launderer can now accept the order
+      
+      
       const orderId = req.params.order_id;
       const order = await Order.findById(orderId);
       if (order.acceptedStatus === true) {
@@ -98,9 +98,9 @@ const updateOrderAccept = async (req, resp) => {
   }
 };
 
-// @desc    Update Order accepted status as again rejected by the launderer
-// @route   PUT /rejectorder/:order_id
-// @access  Private
+
+
+
 const updateOrderReject = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -110,8 +110,8 @@ const updateOrderReject = async (req, resp) => {
         message: 'User does not have access rights',
       });
     } else {
-      // the role is launderer, and the route can now be accessed.
-      // launderer can now reject the order
+      
+      
       const orderId = req.params.order_id;
       const order = await Order.findById(orderId);
       if (order.pickUpStatus === true) {
@@ -134,9 +134,9 @@ const updateOrderReject = async (req, resp) => {
   }
 };
 
-// @desc    Update Order Delivery Status by the launderer
-// @route   PUT /updatedeliveredstatus/:order_id
-// @access  Private
+
+
+
 const updateDeliveredStatus = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -146,8 +146,8 @@ const updateDeliveredStatus = async (req, resp) => {
         message: 'User does not have access rights',
       });
     } else {
-      // the role is launderer, and the route can now be accessed.
-      // launderer can now set the delivered status of the order to be true
+      
+      
       const orderId = req.params.order_id;
       const order = await Order.findById(orderId);
       if (order.acceptedStatus === false) {
@@ -177,9 +177,9 @@ const updateDeliveredStatus = async (req, resp) => {
   }
 };
 
-// @desc    Update Order Delivery Date by the launderer
-// @route   PUT /updatedeliverydate/:order_id
-// @access  Private
+
+
+
 const updateOrderDeliveryDate = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -189,8 +189,8 @@ const updateOrderDeliveryDate = async (req, resp) => {
         message: 'User does not have access rights',
       });
     } else {
-      // the role is launderer, and the route can now be accessed.
-      // launderer can now update the delivery date
+      
+      
       const orderId = req.params.order_id;
       const result = await Order.findByIdAndUpdate(orderId, {
         deliveryDate: req.body.deliveryDate,

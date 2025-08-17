@@ -1,27 +1,6 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Grid,
-  Icon,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Stack,
-  Text,
-  useDisclosure,
-  useMediaQuery,
-  useToast,
-} from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import { FaEnvelope, FaPhone, FaUser } from 'react-icons/fa';
+import { IoClose } from 'react-icons/io5';
 import useAuthStore from '../Store/AuthStore';
 import { updateUserDetails } from '../../utils/apis';
 
@@ -46,12 +25,25 @@ function LaundererDetails() {
   const emailRef = useRef(null);
 
   const [isEditMode, setIsEditMode] = useState(true);
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  React.useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   const getChangedData = (initialData, currentData) => {
     const changedData = {};
     const changedFields = [];
-    // eslint-disable-next-line no-restricted-syntax
     for (const key in currentData) {
       if (currentData[key] !== initialData[key]) {
         changedData[key] = currentData[key];
@@ -67,15 +59,8 @@ function LaundererDetails() {
     email: userEmail,
   };
 
-  const handleToast = (title, description, status) => {
-    toast({
-      position: 'top',
-      title,
-      description,
-      status,
-      isClosable: true,
-      duration: 2000,
-    });
+  const handleToast = (title, description) => {
+    alert(`${title}: ${description}`);
   };
 
   const handleSubmit = async (e) => {
@@ -97,7 +82,6 @@ function LaundererDetails() {
       return;
     }
     try {
-      // eslint-disable-next-line no-unused-vars
       const response = await updateUserDetails(changedData);
 
       changedFields.forEach((field) => {
@@ -137,7 +121,7 @@ function LaundererDetails() {
   };
 
   const handleOpen = () => {
-    onOpen();
+    openModal();
     setTimeout(() => {
       if (usernameRef.current) usernameRef.current.value = userName || '';
       if (phoneRef.current) phoneRef.current.value = Phone || '';
@@ -145,183 +129,178 @@ function LaundererDetails() {
     }, 0);
   };
 
-  const [isLargerThan768px] = useMediaQuery('(min-width: 768px)');
   return (
-    <Stack align="center" justify="center" spacing={4} pt="4rem">
-      <Box
-        borderRadius="1.2rem"
-        px={['2rem', '3rem']}
-        py={['2rem', '3rem']}
-        shadow="md"
-        w={['auto', 'auto', 'auto', '40rem', '40rem', '45rem']}
-        mb="2rem"
-        bg="#ffffff"
-        border="2px solid #ce1567"
-        boxShadow="0px 0px 20px 0px rgba(0, 0, 0, 0.20)"
-        mx="auto"
+    <div className="flex flex-col items-center justify-center space-y-4 pt-16">
+      <div
+        className="rounded-2xl px-8 md:px-12 py-8 md:py-12 
+                   w-auto md:w-auto lg:w-auto xl:w-[40rem] 2xl:w-[45rem] 
+                   mb-8 bg-white border-2 border-[#ce1567] 
+                   shadow-[0px_0px_20px_0px_rgba(0,0,0,0.20)] mx-auto"
       >
-        <Flex
-          align="center"
-          justify={isLargerThan768px ? 'space-between' : 'center'}
-          mb="1rem"
-          direction={isLargerThan768px ? 'row' : 'column'}
+        <div
+          className={`flex items-center ${
+            isMobile ? 'justify-center flex-col' : 'justify-between'
+          } mb-4`}
         >
-          <Text
-            textAlign="center"
-            color="#292929"
-            fontSize={['1.5rem', '1.8rem']}
-            fontWeight="100"
-            mb={isLargerThan768px ? '0' : '1rem'}
+          <h2
+            className={`text-center text-[#292929] 
+                       text-2xl md:text-3xl font-light 
+                       ${!isMobile ? 'mb-0' : 'mb-4'}`}
           >
             User Details
-          </Text>
-          {isLargerThan768px && (
-            <Button
+          </h2>
+          {!isMobile && (
+            <button
               onClick={handleOpen}
-              bgColor="#ce1567"
-              color="#ffff"
-              textAlign="center"
-              width="7rem"
-              _hover={{
-                color: '#292929',
-                bgColor: '#ce1567',
-              }}
-              mb="1rem"
+              className="bg-[#ce1567] text-white text-center w-28 py-2 rounded
+                         hover:text-[#292929] hover:bg-[#ce1567] transition-colors
+                         mb-4"
             >
               Edit
-            </Button>
+            </button>
           )}
-        </Flex>
-        <Grid templateColumns="1fr" gap={4} mb="1rem">
-          <Flex align="center" mb="0.5rem">
-            <Icon as={FaUser} mr="0.5rem" />
-            <Text fontSize={['1rem', '1.2rem']} fontWeight="500">
+        </div>
+        <div className="grid grid-cols-1 gap-4 mb-4">
+          <div className="flex items-center mb-2">
+            <FaUser className="mr-2" />
+            <span className="text-base md:text-xl font-medium">
               <strong>Username:</strong> {userName}
-            </Text>
-          </Flex>
+            </span>
+          </div>
 
-          <Flex align="center" mb="0.5rem">
-            <Icon as={FaPhone} mr="0.5rem" />
-            <Text fontSize={['1rem', '1.2rem']} fontWeight="500">
+          <div className="flex items-center mb-2">
+            <FaPhone className="mr-2" />
+            <span className="text-base md:text-xl font-medium">
               <strong>Phone:</strong> {Phone}
-            </Text>
-          </Flex>
-          <Flex align="center" mb="0.5rem">
-            <Icon as={FaEnvelope} mr="0.5rem" />
-            <Text fontSize={['1rem', '1.2rem']} fontWeight="500">
+            </span>
+          </div>
+          
+          <div className="flex items-center mb-2">
+            <FaEnvelope className="mr-2" />
+            <span className="text-base md:text-xl font-medium">
               <strong>Email:</strong> {userEmail}
-            </Text>
-          </Flex>
-        </Grid>
-        {!isLargerThan768px && (
-          <Button
-            onClick={onOpen}
-            bgColor="#ce1567"
-            color="#ffff"
-            textAlign="center"
-            width="7rem"
-            _hover={{
-              color: '#292929',
-              bgColor: '#ce1567',
-            }}
-            mt="2rem"
-            mx="auto"
-            display="block"
+            </span>
+          </div>
+        </div>
+        
+        {isMobile && (
+          <button
+            onClick={openModal}
+            className="bg-[#ce1567] text-white text-center w-28 py-2 rounded
+                       hover:text-[#292929] hover:bg-[#ce1567] transition-colors
+                       mt-8 mx-auto block"
           >
             Edit
-          </Button>
+          </button>
         )}
-      </Box>
+      </div>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent maxWidth="500px">
-          <ModalHeader textAlign="center">User Details</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Flex
-              direction="column"
-              border="2px solid #292929"
-              w="full"
-              px={['1rem', '2rem']}
-              py={['1rem', '2rem']}
-              borderRadius="1.2rem"
-              shadow="md"
-              bg="white"
-            >
-              <form onSubmit={handleSubmit}>
-                <Stack spacing={4}>
-                  <FormControl id="username" isRequired>
-                    <FormLabel>Username</FormLabel>
-                    <Input
-                      type="text"
-                      name="username"
-                      ref={usernameRef}
-                      isDisabled={!isEditMode}
-                    />
-                  </FormControl>
+      {}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h3 className="text-lg font-semibold text-center flex-1">
+                User Details
+              </h3>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <IoClose size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="border-2 border-[#292929] w-full px-4 md:px-8 py-4 md:py-8 rounded-2xl shadow-md bg-white">
+                <form onSubmit={handleSubmit}>
+                  <div className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="username"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Username <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        ref={usernameRef}
+                        disabled={!isEditMode}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ce1567] disabled:bg-gray-100"
+                      />
+                    </div>
 
-                  <FormControl id="phone" isRequired>
-                    <FormLabel>Phone</FormLabel>
-                    <Input
-                      type="tel"
-                      name="phone_number"
-                      ref={phoneRef}
-                      isDisabled={!isEditMode}
-                    />
-                  </FormControl>
-                  <FormControl id="email" isRequired>
-                    <FormLabel>Email</FormLabel>
-                    <Input
-                      type="email"
-                      name="email"
-                      ref={emailRef}
-                      isDisabled={!isEditMode}
-                    />
-                  </FormControl>
-                </Stack>
-                {isEditMode && (
-                  <Button
-                    type="submit"
-                    width="full"
-                    mt="2rem"
-                    bgColor="#ce1567"
-                    color="#ffffff"
-                    _hover={{
-                      bgColor: '#b50055',
-                    }}
-                  >
-                    Save
-                  </Button>
-                )}
-              </form>
-            </Flex>
-          </ModalBody>
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Phone <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        name="phone_number"
+                        ref={phoneRef}
+                        disabled={!isEditMode}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ce1567] disabled:bg-gray-100"
+                      />
+                    </div>
 
-          <ModalFooter justifyContent="flex-end">
-            <Button
-              color="#ffffff"
-              bgColor="red"
-              _hover={{ bgColor: 'red' }}
-              onClick={onClose}
-              mr={3}
-            >
-              Close
-            </Button>
-            <Button
-              onClick={() => setIsEditMode(!isEditMode)}
-              bgColor={isEditMode ? 'red' : '#ce1567'}
-              color="#ffffff"
-              _hover={{
-                bgColor: `${isEditMode ? 'red' : '#b50055'}`,
-              }}
-            >
-              {isEditMode ? 'Cancel' : 'Edit Details'}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Stack>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Email <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        ref={emailRef}
+                        disabled={!isEditMode}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ce1567] disabled:bg-gray-100"
+                      />
+                    </div>
+                  </div>
+                  
+                  {isEditMode && (
+                    <button
+                      type="submit"
+                      className="w-full mt-8 bg-[#ce1567] text-white py-2 rounded-md hover:bg-[#b50055] transition-colors"
+                    >
+                      Save
+                    </button>
+                  )}
+                </form>
+              </div>
+            </div>
+
+            <div className="flex justify-end p-6 border-t space-x-3">
+              <button
+                onClick={closeModal}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => setIsEditMode(!isEditMode)}
+                className={`px-4 py-2 rounded-md text-white transition-colors ${
+                  isEditMode
+                    ? 'bg-red-500 hover:bg-red-600'
+                    : 'bg-[#ce1567] hover:bg-[#b50055]'
+                }`}
+              >
+                {isEditMode ? 'Cancel' : 'Edit Details'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

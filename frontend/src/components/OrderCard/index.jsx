@@ -1,26 +1,3 @@
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  FormControl,
-  FormLabel,
-  Grid,
-  GridItem,
-  Image,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Select,
-  Stack,
-  Tag,
-  TagLabel,
-  TagLeftIcon,
-  Text,
-  useToast,
-} from '@chakra-ui/react';
 import React, { useRef } from 'react';
 import { HiArrowLongRight, HiMiniCurrencyRupee } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
@@ -36,18 +13,11 @@ function OrderCard() {
   const quantityRefs = useRef(prices.map(() => 0));
   const washTypeRefs = useRef(prices.map(() => ''));
   const navigate = useNavigate();
-  const toast = useToast();
 
-  const handleToast = (title, description, status) => {
-    toast({
-      position: 'top',
-      title,
-      description,
-      status,
-      isClosable: true,
-      duration: 2000,
-    });
+  const handleToast = (title, description) => {
+    alert(`${title}: ${description}`);
   };
+  
   const handleCheckout = () => {
     if (order.items.length === 0) {
       handleToast(
@@ -92,204 +62,138 @@ function OrderCard() {
 
   return (
     <>
-      <Center>
-        <Text mt="6rem" fontWeight={600} fontSize="2rem">
+      <div className="flex justify-center">
+        <h2 className="mt-24 font-semibold text-3xl">
           Select & Add Items
-        </Text>
-      </Center>
-      <Flex
-        flexDirection={{ base: 'column', '2xl': 'row' }}
-        gap={{ base: '3rem', '2xl': '5rem' }}
-        mt="2rem"
-        pb={{ base: '5rem', '2xl': '0' }}
-        justifyContent="center"
-        alignItems="center"
+        </h2>
+      </div>
+      <div
+        className="flex flex-col 2xl:flex-row gap-12 2xl:gap-20 
+                   mt-8 pb-20 2xl:pb-0 justify-center items-center"
       >
         <OrderItemsAccordion />
-        <Grid
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            lg: 'repeat(2, 1fr)',
-          }}
-          gap={{ base: 4, lg: 6, xl: 8 }}
-          px={{ base: '1rem', xl: 0 }}
+        <div
+          className="grid grid-cols-1 lg:grid-cols-2 
+                     gap-4 lg:gap-6 xl:gap-8 px-4 xl:px-0"
         >
           {prices.map((element, index) => {
             return (
-              <GridItem key={index}>
-                <Flex
-                  boxShadow="0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
-                  borderRadius="0.5rem"
-                  py="1.5rem"
-                  px={{ base: '2rem', xl: '2.5rem' }}
-                  align="center"
+              <div key={index}>
+                <div
+                  className="shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] 
+                             rounded-lg py-6 px-8 xl:px-10 flex items-center"
                 >
-                  <Flex
-                    align={{ base: 'top', md: 'center' }}
-                    gap={{ base: '3rem', md: '4rem' }}
-                  >
-                    <Stack align="center" gap="1rem">
-                      <Text fontWeight={600} fontSize="1.3rem" as="u">
+                  <div className="flex items-start md:items-center gap-12 md:gap-16">
+                    <div className="flex flex-col items-center gap-4">
+                      <h3 className="font-semibold text-xl underline">
                         {element.name}
-                      </Text>
-                      <Image
-                        width={{ base: '6rem', lg: '5rem', xl: '6rem' }}
+                      </h3>
+                      <img
+                        className="w-24 lg:w-20 xl:w-24"
                         src={`/assets/${element.image}`}
+                        alt={element.name}
                       />
-                    </Stack>
-                    <Stack gap={5}>
-                      <Flex
-                        direction={{ base: 'column', md: 'row' }}
-                        gap={{ base: '1.5rem', md: '2rem' }}
-                      >
-                        <Box>
-                          <FormControl isRequired>
-                            <FormLabel fontWeight={600}>Quantity</FormLabel>
-                            <NumberInput
-                              isRequired
-                              allowMouseWheel
-                              min={0}
-                              w={{ base: 'auto', md: '5rem' }}
-                              defaultValue={0}
-                              onChange={(value) => {
-                                quantityRefs.current[index] =
-                                  parseInt(value, 10) || 0;
-                              }}
-                            >
-                              <NumberInputField
-                                border="2px solid #CE1567"
-                                _hover={{ border: '2px solid #CE1567' }}
-                                _focus={{ border: '2px solid #CE1567' }}
-                              />
-                              <NumberInputStepper border="1px solid #CE1567">
-                                <NumberIncrementStepper />
-                                <NumberDecrementStepper />
-                              </NumberInputStepper>
-                            </NumberInput>
-                          </FormControl>
-                        </Box>
-                        <Box>
-                          <FormControl isRequired>
-                            <FormLabel fontWeight={600}>Washing Type</FormLabel>
-                            <Select
-                              isRequired
-                              placeholder="Select Wash Type"
-                              border="2px solid #CE1567"
-                              _hover={{ border: '2px solid #CE1567' }}
-                              _focus={{ border: '2px solid #CE1567' }}
+                    </div>
+                    <div className="flex flex-col gap-5">
+                      <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+                        <div>
+                          <label className="block font-semibold mb-1">
+                            Quantity <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              min="0"
+                              defaultValue="0"
+                              className="w-auto md:w-20 px-3 py-2 border-2 border-[#CE1567] 
+                                         rounded-md hover:border-[#CE1567] focus:border-[#CE1567] 
+                                         focus:outline-none"
                               onChange={(e) => {
-                                washTypeRefs.current[index] = e.target.value;
+                                quantityRefs.current[index] =
+                                  parseInt(e.target.value, 10) || 0;
                               }}
-                            >
-                              <option value="simple_wash">Simple Wash</option>
-                              <option value="power_clean">Power Clean</option>
-                              <option value="dry_clean">Dry Clean</option>
-                            </Select>
-                          </FormControl>
-                        </Box>
-                      </Flex>
-                      <Grid
-                        templateColumns={{
-                          base: 'repeat(1, 1fr)',
-                          md: 'repeat(2, 1fr)',
-                        }}
-                        columnGap={4}
-                        rowGap={2}
-                        boxSize="fit-content"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block font-semibold mb-1">
+                            Washing Type <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            className="px-3 py-2 border-2 border-[#CE1567] rounded-md 
+                                       hover:border-[#CE1567] focus:border-[#CE1567] 
+                                       focus:outline-none bg-white"
+                            defaultValue=""
+                            onChange={(e) => {
+                              washTypeRefs.current[index] = e.target.value;
+                            }}
+                          >
+                            <option value="" disabled>Select Wash Type</option>
+                            <option value="simple_wash">Simple Wash</option>
+                            <option value="power_clean">Power Clean</option>
+                            <option value="dry_clean">Dry Clean</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div
+                        className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 w-fit"
                       >
-                        <GridItem>
-                          <Tag
-                            w="fit-content"
-                            bg="#FFFFFF"
-                            color="#CE1567"
-                            border="2px solid #CE1567"
-                            variant="solid"
-                            size="sm"
-                            px={1}
-                            borderRadius="full"
+                        <div>
+                          <span
+                            className="inline-flex items-center px-2 py-1 rounded-full 
+                                       text-sm bg-white text-[#CE1567] border-2 border-[#CE1567]"
                           >
-                            <TagLeftIcon
-                              boxSize="1rem"
-                              as={HiMiniCurrencyRupee}
-                            />
-                            <TagLabel>
-                              {`${prices[index].prices.simple_wash} - Simple Wash`}
-                            </TagLabel>
-                          </Tag>
-                        </GridItem>
-                        <GridItem>
-                          <Tag
-                            w="fit-content"
-                            bg="#FFFFFF"
-                            color="#CE1567"
-                            border="2px solid #CE1567"
-                            variant="solid"
-                            size="sm"
-                            px={1}
-                            borderRadius="full"
+                            <HiMiniCurrencyRupee className="w-4 h-4 mr-1" />
+                            {`${prices[index].prices.simple_wash} - Simple Wash`}
+                          </span>
+                        </div>
+                        <div>
+                          <span
+                            className="inline-flex items-center px-2 py-1 rounded-full 
+                                       text-sm bg-white text-[#CE1567] border-2 border-[#CE1567]"
                           >
-                            <TagLeftIcon
-                              boxSize="1rem"
-                              as={HiMiniCurrencyRupee}
-                            />
-                            <TagLabel>
-                              {`${prices[index].prices.power_clean} - Power Clean`}
-                            </TagLabel>
-                          </Tag>
-                        </GridItem>
-                        <GridItem>
-                          <Tag
-                            w="fit-content"
-                            bg="#FFFFFF"
-                            color="#CE1567"
-                            border="2px solid #CE1567"
-                            variant="solid"
-                            size="sm"
-                            px={1}
-                            borderRadius="full"
+                            <HiMiniCurrencyRupee className="w-4 h-4 mr-1" />
+                            {`${prices[index].prices.power_clean} - Power Clean`}
+                          </span>
+                        </div>
+                        <div>
+                          <span
+                            className="inline-flex items-center px-2 py-1 rounded-full 
+                                       text-sm bg-white text-[#CE1567] border-2 border-[#CE1567]"
                           >
-                            <TagLeftIcon
-                              boxSize="1rem"
-                              as={HiMiniCurrencyRupee}
-                            />
-                            <TagLabel>
-                              {`${prices[index].prices.dry_clean} - Dry Clean`}
-                            </TagLabel>
-                          </Tag>
-                        </GridItem>
-                      </Grid>
-                    </Stack>
-                  </Flex>
-                </Flex>
-              </GridItem>
+                            <HiMiniCurrencyRupee className="w-4 h-4 mr-1" />
+                            {`${prices[index].prices.dry_clean} - Dry Clean`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             );
           })}
-          <Flex
-            align={{ base: 'center', lg: 'end' }}
-            justify={{ base: 'center', lg: 'end' }}
-            gap={5}
-            mt={{ base: '1rem', lg: '0' }}
+          <div
+            className="flex items-center lg:items-end justify-center lg:justify-end 
+                       gap-5 mt-4 lg:mt-0"
           >
-            <Button
-              bg="#CE1567"
-              color="#FFFFFF"
-              _hover={{ bg: '#bf0055' }}
+            <button
+              className="bg-[#CE1567] text-white px-4 py-2 rounded-md 
+                         hover:bg-[#bf0055] transition-colors"
               onClick={handleAddItems}
             >
               Add Items
-            </Button>
-            <Button
-              bg="#CE1567"
-              color="#FFFFFF"
-              _hover={{ bg: '#bf0055' }}
-              rightIcon={<HiArrowLongRight size={30} />}
+            </button>
+            <button
+              className="bg-[#CE1567] text-white px-4 py-2 rounded-md 
+                         hover:bg-[#bf0055] transition-colors flex items-center gap-2"
               onClick={handleCheckout}
             >
               Proceed
-            </Button>
-          </Flex>
-        </Grid>
-      </Flex>
+              <HiArrowLongRight size={30} />
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { Box, Button, Flex, HStack, Stack, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { FiBox } from 'react-icons/fi';
 
@@ -18,70 +17,54 @@ function StudentDashBoard() {
         <meta name="description" content="" />
       </Helmet>
       <Navbar />
-      <Box
-        position="fixed"
-        left={0}
-        top={['50px', '55px', '70px']}
-        bottom={0}
-        w="15rem"
-        boxShadow="0px 2px 3px lightgray"
-        pl="2rem"
-        pr="1rem"
-        pt="2rem"
-      >
-        <HStack mb="2rem">
+      <div className="fixed left-0 top-[50px] sm:top-[55px] md:top-[70px] bottom-0 w-60 shadow-[0px_2px_3px_lightgray] pl-8 pr-4 pt-8">
+        <div className="flex items-center gap-2 mb-8">
           <RiSettingsLine size={35} />
-          <Text fontWeight={600} fontSize="1.4rem">
-            Dashboard
-          </Text>
-        </HStack>
-        <Stack gap={4}>
-          <Button
-            p={0}
-            color={!isActive ? 'white' : '#9197B3'}
-            bgColor={!isActive ? '#CE1567' : 'transparent'}
+          <span className="font-semibold text-xl">Dashboard</span>
+        </div>
+        <div className="flex flex-col gap-4">
+          <button
+            className={`p-0 ${
+              !isActive
+                ? 'text-white bg-lx-red'
+                : 'text-[#9197B3] bg-transparent'
+            } hover:${
+              !isActive ? 'bg-[#bf0055]' : 'bg-transparent'
+            } rounded transition-colors`}
             onClick={() => setIsActive(0)}
-            _hover={{
-              bgColor: `${!isActive ? '#bf0055' : 'transparent'}`,
-            }}
           >
-            <Flex w="100%" justify="space-between" align="center" px="1rem">
-              <Flex align="center" gap={2}>
+            <div className="w-full flex justify-between items-center px-4 py-3">
+              <div className="flex items-center gap-2">
                 <RiAccountBoxLine size={20} />
-                <Text>Profile</Text>
-              </Flex>
+                <span>Profile</span>
+              </div>
               <MdKeyboardArrowRight />
-            </Flex>
-          </Button>
-          <Button
-            p={0}
-            color={isActive ? 'white' : '#9197B3'}
-            bgColor={isActive ? '#CE1567' : 'transparent'}
+            </div>
+          </button>
+          <button
+            className={`p-0 ${
+              isActive
+                ? 'text-white bg-lx-red'
+                : 'text-[#9197B3] bg-transparent'
+            } hover:${
+              isActive ? 'bg-[#bf0055]' : 'bg-transparent'
+            } rounded transition-colors`}
             onClick={() => setIsActive(1)}
-            _hover={{
-              bgColor: `${isActive ? '#bf0055' : 'transparent'}`,
-            }}
           >
-            <Flex w="100%" justify="space-between" align="center" px="1rem">
-              <Flex align="center" gap={2}>
+            <div className="w-full flex justify-between items-center px-4 py-3">
+              <div className="flex items-center gap-2">
                 <FiBox size={20} />
-                <Text>Orders</Text>
-              </Flex>
+                <span>Orders</span>
+              </div>
               <MdKeyboardArrowRight />
-            </Flex>
-          </Button>
-        </Stack>
-      </Box>
+            </div>
+          </button>
+        </div>
+      </div>
 
-      <Flex
-        justify="space-evenly"
-        align="center"
-        pt="5rem"
-        pl="5rem"
-        mt={['50px', '55px', '70px']}
-      >
+      <div className="flex justify-evenly items-center pt-20 pl-20 mt-[50px] sm:mt-[55px] md:mt-[70px]">
         {!isActive ? <StudentDetails /> : <OrderDetail />}
-      </Flex>
+      </div>
     </>
   );
 }

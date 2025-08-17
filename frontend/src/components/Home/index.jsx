@@ -1,4 +1,3 @@
-import { Box, Center } from '@chakra-ui/react';
 import React from 'react';
 import ContactSection from './Contact';
 import Hero from './Hero';
@@ -7,20 +6,20 @@ import WorkingCard from './WorkingCard';
 
 function Main() {
   return (
-    <Box pt="4rem">
-      <Center height="100vh">
+    <div className="pt-16">
+      <div className="flex justify-center items-center h-screen">
         <Hero />
-      </Center>
-      <Box height="100vh">
+      </div>
+      <div className="h-screen">
         <ServiceCard />
-      </Box>
-      <Box height="100vh">
+      </div>
+      <div className="h-screen">
         <WorkingCard />
-      </Box>
-      <Center height="100vh">
+      </div>
+      <div className="flex justify-center items-center h-screen">
         <ContactSection />
-      </Center>
-    </Box>
+      </div>
+    </div>
   );
 }
 

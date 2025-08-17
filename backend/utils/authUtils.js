@@ -41,7 +41,7 @@ const handleSignUpError = (err) => {
       error.phone_number = err.errors.phone_number.message;
     }
   } else {
-    // If no specific errors are found, return the whole error object
+    
     return err;
   }
 
@@ -58,7 +58,7 @@ const handleLogInError = (err) => {
   return errors;
 };
 
-const maxAge = 86400; // 3 days in seconds
+const maxAge = 86400; 
 const createToken = (username, role, userId, hostel) => {
   return jwt.sign(
     {

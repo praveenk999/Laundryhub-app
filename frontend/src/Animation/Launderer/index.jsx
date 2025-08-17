@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import Lottie from 'lottie-react';
-import { Flex } from '@chakra-ui/react';
 import animationData from './launderer.json';
 
 function Animation() {
@@ -33,13 +32,13 @@ function Animation() {
   }, []);
 
   return (
-    <Flex align="center" justify="center" height="100vh">
+    <div className="flex items-center justify-center h-screen">
       <Lottie
         animationData={animationData}
         style={{ height: '15rem' }}
         lottieRef={lottieRef}
       />
-    </Flex>
+    </div>
   );
 }
 

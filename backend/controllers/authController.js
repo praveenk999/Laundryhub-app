@@ -4,12 +4,11 @@ const nodemailer = require('nodemailer');
 const User = require('../models/userModel');
 const authUtils = require('../utils/authUtils');
 
-const maxAge = 86400; // 3 days in seconds
+const maxAge = 86400; 
 
-// @desc    Get all users
-// @route   GET /users
-// For testing purposes
-// @access  Private
+
+
+
 const getAllUsers = async (req, resp) => {
   try {
 
@@ -20,10 +19,10 @@ const getAllUsers = async (req, resp) => {
   }
 };
 
-// @desc    Get all launderers
-// @route   GET /launderers
-// For testing purposes
-// @access  Private
+
+
+
+
 const getAllLaunderers = async (req, resp) => {
   try {
     
@@ -35,9 +34,9 @@ const getAllLaunderers = async (req, resp) => {
     resp.status(500).json('UserModel error');
   }
 };
-// @desc    Create a new user
-// @route   POST /signup
-// @access  Public
+
+
+
 const createUser = async (req, resp) => {
   try {
     const { username, email, password, role, phone_number } = req.body;
@@ -57,13 +56,13 @@ const createUser = async (req, resp) => {
       user._id,
       user.hostel
     );
-    // Always set the headers before sending the response
+    
     resp.cookie('jwt', token, {
       httpOnly: true,
       maxAge: maxAge * 1000,
-      secure: process.env.NODE_ENV === 'production', // set to true if your using https
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // if backend and frontend are on different domains
-    }); // Set the cookie
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', 
+    }); 
 
     resp.status(201).json({
       newUser: user,
@@ -77,9 +76,9 @@ const createUser = async (req, resp) => {
   }
 };
 
-// @desc    Create a new user
-// @route   PATCH /user
-// @access  Private
+
+
+
 const updateUser = async (req, resp) => {
   const updates = req.body;
   const token = req.cookies.jwt;
@@ -99,9 +98,9 @@ const updateUser = async (req, resp) => {
   }
 };
 
-// @desc    Log in a user
-// @route   POST /login
-// @access  Public
+
+
+
 const loginUser = async (req, resp) => {
   const { username, password } = req.body;
   try {
@@ -120,9 +119,9 @@ const loginUser = async (req, resp) => {
         resp.cookie('jwt', token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
-          secure: process.env.NODE_ENV === 'production', // set to true if your using https
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // if backend and frontend are on different domains
-        }); // Set the cookie
+          secure: process.env.NODE_ENV === 'production', 
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', 
+        }); 
 
         resp.status(200).json({
           username: user.username,
@@ -145,25 +144,25 @@ const loginUser = async (req, resp) => {
   }
 };
 
-// @desc    Log out a user
-// @route   GET /logout
-// @access  Public
+
+
+
 const logoutUser = async (req, resp) => {
   resp.cookie('jwt', '', {
     httpOnly: true,
     maxAge: -1,
-    secure: process.env.NODE_ENV === 'production', // set to true if your using https
-    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // if backend and frontend are on different domains
-  }); // negative maxAge so that the cookie expires immediately
+    secure: process.env.NODE_ENV === 'production', 
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', 
+  }); 
 
   resp.status(200).json({
     message: 'User logged out successfully',
   });
 };
 
-// @desc    Accepts the user email and sends a reset password link
-// @route   POST /forgotpassword
-// @access  Public
+
+
+
 const forgotPassword = async (req, resp) => {
   const { email } = req.body;
   try {
@@ -183,11 +182,11 @@ const forgotPassword = async (req, resp) => {
         secret,
         { expiresIn: '5m' }
       );
-      const url = `http://localhost:4000/resetpassword/${user._id}/${token}`;
+      const url = `http:
 
-      // eslint-disable-next-line no-unused-vars
+      
       const testAccount = await nodemailer.createTestAccount();
-      // connect with smtp
+      
       const transporter = await nodemailer.createTransport({
         service: 'gmail',
         host: 'smtp.gmail.com',
@@ -212,9 +211,9 @@ const forgotPassword = async (req, resp) => {
   }
 };
 
-// @desc    Reset the user password (Gets the password from input)
-// @route   GET /resetpassword/:id/:token
-// @access  Public
+
+
+
 const getResetPassword = async (req, resp) => {
   const { id, token } = req.params;
   const user = await User.findById(id);
@@ -223,7 +222,7 @@ const getResetPassword = async (req, resp) => {
   }
   const secret = process.env.JWT_SECRET + user.password;
   try {
-    // eslint-disable-next-line no-unused-vars
+    
     const verify = jwt.verify(token, secret);
     resp.render('index', {
       status: 'not verified',
@@ -234,9 +233,9 @@ const getResetPassword = async (req, resp) => {
   }
 };
 
-// @desc    Reset the user password
-// @route   POST /forgotpassword
-// @access  Public
+
+
+
 const postResetPassword = async (req, resp) => {
   const { id, token } = req.params;
   const { password } = req.body;
@@ -262,7 +261,7 @@ const postResetPassword = async (req, resp) => {
 
   const secret = process.env.JWT_SECRET + user.password;
   try {
-    // eslint-disable-next-line no-unused-vars
+    
     const verify = jwt.verify(token, secret);
     user.password = password;
     user.save();

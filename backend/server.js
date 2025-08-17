@@ -1,8 +1,8 @@
 const express = require('express');
-// eslint-disable-next-line no-unused-vars
+
 const colors = require('colors');
 const cookieParser = require('cookie-parser');
-// eslint-disable-next-line no-unused-vars
+
 const dotenv = require('dotenv').config();
 const cors = require('cors');
 const cron = require('node-cron');
@@ -15,7 +15,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
-// Enhanced logging middleware
+
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
   console.log(
@@ -23,12 +23,12 @@ app.use((req, res, next) => {
       .white
   );
 
-  // Log request body for POST/PUT requests
+  
   if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
     console.log(`📤 Request Body:`.blue, JSON.stringify(req.body, null, 2));
   }
 
-  // Override res.json to log responses
+  
   const originalJson = res.json;
   res.json = function json(data) {
     const responseTimestamp = new Date().toISOString();
@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 
 const port = process.env.PORT || 4000;
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://laundryhub-web.vercel.app'],
+  origin: ['http:
   methods: 'GET, POST, PUT, DELETE, PATCH',
   credentials: true,
   optionsSuccessStatus: 200,
@@ -73,8 +73,8 @@ app.use(studentRoutes);
 app.use(razorpayRoutes);
 app.use(notificationRoutes);
 
-// Global error handling middleware
-// eslint-disable-next-line no-unused-vars
+
+
 app.use((err, req, res, next) => {
   const timestamp = new Date().toISOString();
   console.log(`💥 [${timestamp}] UNHANDLED ERROR:`.red.bold);
@@ -89,7 +89,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+
 app.use((req, res) => {
   const timestamp = new Date().toISOString();
   console.log(
@@ -107,14 +107,14 @@ app.get('/', (req, resp) => {
 
 app.listen(port, () => {
   console.log(`🚀 LaundryHub Backend Server Started!`.green.bold);
-  console.log(`🌐 Server running on: http://localhost:${port}`.yellow.bold);
+  console.log(`🌐 Server running on: http:
   console.log(`📅 Environment: ${process.env.NODE_ENV}`.cyan);
   console.log(`🕐 Started at: ${new Date().toISOString()}`.cyan);
   console.log(`⏰ Cron job scheduled: Daily cleanup at midnight`.blue);
 });
 
-// task scheduler to delete the orders that are valid every 2 days
-// Runs every day at midnight
+
+
 cron.schedule('0 0 * * *', () => {
   console.log(`⏰ Cron job triggered: Starting daily order cleanup`.blue.bold);
   DB.deleteValidOrders();

@@ -1,532 +1,5 @@
 
-
-// import {
-//   Accordion,
-//   AccordionButton,
-//   AccordionIcon,
-//   AccordionItem,
-//   AccordionPanel,
-//   Box,
-//   Button,
-//   Center,
-//   Checkbox,
-//   CheckboxGroup,
-//   Divider,
-//   Flex,
-//   Grid,
-//   GridItem,
-//   HStack,
-//   IconButton,
-//   Modal,
-//   ModalBody,
-//   ModalCloseButton,
-//   ModalContent,
-//   ModalFooter,
-//   ModalHeader,
-//   ModalOverlay,
-//   Spinner,
-//   Switch,
-//   Table,
-//   Tag,
-//   Tbody,
-//   Td,
-//   Text,
-//   Th,
-//   Thead,
-//   Tr,
-//   VStack,
-//   useDisclosure,
-//   useToast,
-// } from '@chakra-ui/react';
-// import React, { useEffect, useState } from 'react';
-// import { MdDelete } from 'react-icons/md';
-// import useAuthStore from '../Store/AuthStore';
-// import {
-//   getAllOrders,
-//   postNotif,
-//   updateAcceptedStatus,
-//   updateDeliveryStatus,
-// } from '../../utils/apis';
-
-// function LaundererOrdersDetail() {
-//   const [orders, setOrders] = useState([]);
-//   const [selectedOrder, setSelectedOrder] = useState(null);
-//   const [selectedFilters, setSelectedFilters] = useState(['all']);
-//   const { isOpen, onOpen, onClose } = useDisclosure();
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const toast = useToast();
-//   const { userName } = useAuthStore((state) => ({
-//     userName: state.userName,
-//   }));
-  
-//   const handleToast = (title, description, status) => {
-//     toast({
-//       position: 'top',
-//       title,
-//       description,
-//       status,
-//       duration: 5000,
-//       isClosable: true,
-//     });
-//   };
-
-//   useEffect(() => {
-//     const getOrders = async () => {
-//       try {
-//         const response = await getAllOrders();
-//         setOrders(response.data.orders);
-//         setLoading(false);
-//       } catch (err) {
-//         setError(err.message);
-//         setLoading(false);
-//       }
-//     };
-//     getOrders();
-//   }, []);
-
-//   const handleCardClick = (order) => {
-//     setSelectedOrder(order);
-//     onOpen();
-//   };
-
-//   const getTotalQuantity = (items) => {
-//     return items.reduce((total, item) => total + item.quantity, 0);
-//   };
-
-//   const handleFilterChange = (value) => {
-//     if (value === 'all') {
-//       setSelectedFilters(['all']);
-//     } else {
-//       setSelectedFilters((prev) => {
-//         const newFilters = prev.includes(value)
-//           ? prev.filter((f) => f !== value)
-//           : [...prev.filter((f) => f !== 'all'), value];
-//         return newFilters.length === 0 ? ['all'] : newFilters;
-//       });
-//     }
-//   };
-
-//   const filteredOrders = orders.filter((order) => {
-//     if (selectedFilters.includes('all')) return true;
-
-//     return selectedFilters.every((value) => {
-//       if (value === 'accepted') return order.acceptedStatus;
-//       if (value === 'pickedUp') return order.pickUpStatus;
-//       if (value === 'delivered') return order.deliveredStatus;
-//       if (value === 'paid') return order.paid;
-//       return true;
-//     });
-//   });
-
-//   if (loading) {
-//     return (
-//       <Center>
-//         <Spinner size="xl" />
-//       </Center>
-//     );
-//   }
-
-//   if (error) {
-//     return handleToast('Error', 'Please Login again', 'error');
-//   }
-
-//   return (
-//     <VStack align="start" gap={14} ml="8rem" h="100vh" overflow="hidden">
-//       <Text fontSize="2rem" fontWeight="bold">
-//         Order Details:
-//       </Text>
-//       <CheckboxGroup>
-//         <HStack
-//           gap={8}
-//           overflowX="scroll"
-//           css={{
-//             '&::-webkit-scrollbar': {
-//               display: 'none',
-//             },
-//             'scrollbar-width': 'none',
-//           }}
-//         >
-//           <Checkbox
-//             isChecked={selectedFilters.includes('all')}
-//             onChange={() => handleFilterChange('all')}
-//           >
-//             All
-//           </Checkbox>
-//           <Checkbox
-//             isChecked={selectedFilters.includes('accepted')}
-//             onChange={() => handleFilterChange('accepted')}
-//           >
-//             Accepted
-//           </Checkbox>
-//           <Checkbox
-//             isChecked={selectedFilters.includes('pickedUp')}
-//             onChange={() => handleFilterChange('pickedUp')}
-//           >
-//             Picked Up
-//           </Checkbox>
-//           <Checkbox
-//             isChecked={selectedFilters.includes('delivered')}
-//             onChange={() => handleFilterChange('delivered')}
-//           >
-//             Delivered
-//           </Checkbox>
-//           <Checkbox
-//             onChange={() => handleFilterChange('paid')}
-//             isChecked={selectedFilters.includes('paid')}
-//           >
-//             Paid
-//           </Checkbox>
-//         </HStack>
-//       </CheckboxGroup>
-//       <Box
-//         w="75vw"
-//         h="calc(100vh - 300px)"
-//         overflowX="auto"
-//         overflowY="auto"
-//         css={{
-//           '&::-webkit-scrollbar': {
-//             width: '8px',
-//             height: '8px',
-//           },
-//           '&::-webkit-scrollbar-track': {
-//             background: '#f1f1f1',
-//             borderRadius: '10px',
-//           },
-//           '&::-webkit-scrollbar-thumb': {
-//             background: '#888',
-//             borderRadius: '10px',
-//           },
-//           '&::-webkit-scrollbar-thumb:hover': {
-//             background: '#555',
-//           },
-//         }}
-//       >
-//         <Table variant="simple" size="sm">
-//           <Thead position="sticky" top={0} bg="white" zIndex={1}>
-//             <Tr>
-//               <Th textAlign="right">Order ID</Th>
-//               <Th textAlign="right">Order Total</Th>
-//               <Th textAlign="right">Pickup Date</Th>
-//               <Th textAlign="right">Total Items</Th>
-//               <Th textAlign="right">Accepted Status</Th>
-//               <Th textAlign="right">Delivery Status</Th>
-//               <Th textAlign="right">Actions</Th>
-//             </Tr>
-//           </Thead>
-//           <Tbody>
-//             {filteredOrders.map((order) => (
-//               <Tr key={order._id}>
-//                 <Td textAlign="right">{order._id}</Td>
-//                 <Td textAlign="right">₹{order.orderTotal}</Td>
-//                 <Td textAlign="right">{order.pickupDate}</Td>
-//                 <Td textAlign="right">{getTotalQuantity(order.items)}</Td>
-//                 <Td textAlign="right">
-//                   <Tag
-//                     size="lg"
-//                     colorScheme={order.acceptedStatus ? 'green' : 'red'}
-//                   >
-//                     {order.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-//                   </Tag>
-//                 </Td>
-//                 <Td textAlign="right">
-//                   <Tag
-//                     size="lg"
-//                     colorScheme={order.deliveredStatus ? 'green' : 'red'}
-//                   >
-//                     {order.deliveredStatus ? 'Delivered' : 'Not Delivered'}
-//                   </Tag>
-//                 </Td>
-//                 <Td textAlign="right">
-//                   <Flex gap={4} w="fit-content" justify="flex-end">
-//                     <Button
-//                       color="#ce1567"
-//                       onClick={() => handleCardClick(order)}
-//                     >
-//                       View Details
-//                     </Button>
-//                   </Flex>
-//                 </Td>
-//               </Tr>
-//             ))}
-//           </Tbody>
-//         </Table>
-//       </Box>
-
-//       {selectedOrder && (
-//         <Modal isOpen={isOpen} onClose={onClose}>
-//           <ModalOverlay />
-//           <ModalContent
-//             width="90%"
-//             border="2px solid #ce1567"
-//             borderRadius="0.5rem"
-//           >
-//             <ModalHeader />
-//             <ModalCloseButton />
-//             <ModalBody>
-//               <Text fontSize="xl" fontWeight="bold">
-//                 Order ID: {selectedOrder._id}
-//               </Text>
-//               <Divider my={2} />
-//               <Text fontSize="lg" fontWeight="bold" color="purple.500">
-//                 Student Details:
-//               </Text>
-//               <Divider my={2} />
-//               <Grid templateColumns="repeat(2, 1fr)" gap={2}>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Student Username:</strong>{' '}
-//                     {selectedOrder.user.username}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Contact No.:</strong>{' '}
-//                     {selectedOrder.user.phone_number}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Roll No.:</strong> {selectedOrder.user.roll_number}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Hostel:</strong> {selectedOrder.user.hostel}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Room No.:</strong> {selectedOrder.user.room_number}
-//                   </Text>
-//                 </GridItem>
-//               </Grid>
-//               <Divider my={2} />
-//               <Text fontSize="lg" fontWeight="bold" color="orange.500">
-//                 Order Details:
-//               </Text>
-//               <Divider my={2} />
-//               <Grid templateColumns="repeat(2, 1fr)" gap={2}>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Pickup Address:</strong>{' '}
-//                     {selectedOrder.pickupAddress}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Delivery Address:</strong>{' '}
-//                     {selectedOrder.deliveryAddress}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Pickup Date:</strong> {selectedOrder.pickupDate}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Pickup Time:</strong> {selectedOrder.pickupTime}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Delivery Date:</strong> {selectedOrder.deliveryDate}
-//                   </Text>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Delivery Time:</strong> {selectedOrder.deliveryTime}
-//                   </Text>
-//                 </GridItem>
-//               </Grid>
-//               <Divider my={2} />
-//               <Grid templateColumns="repeat(2, 1fr)" gap={4} my={4}>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Accepted Status:</strong>
-//                   </Text>
-//                   <Tag
-//                     size="lg"
-//                     colorScheme={selectedOrder.acceptedStatus ? 'green' : 'red'}
-//                   >
-//                     {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-//                   </Tag>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Delivery Status:</strong>
-//                   </Text>
-//                   <Tag
-//                     size="lg"
-//                     colorScheme={
-//                       selectedOrder.deliveredStatus ? 'green' : 'red'
-//                     }
-//                   >
-//                     {selectedOrder.deliveredStatus
-//                       ? 'Delivered'
-//                       : 'Not Delivered'}
-//                   </Tag>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Pickup Status:</strong>
-//                   </Text>
-//                   <Tag
-//                     size="lg"
-//                     colorScheme={selectedOrder.pickUpStatus ? 'green' : 'red'}
-//                   >
-//                     {selectedOrder.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
-//                   </Tag>
-//                 </GridItem>
-//                 <GridItem>
-//                   <Text>
-//                     <strong>Payment Status:</strong>
-//                   </Text>
-//                   <Tag
-//                     size="lg"
-//                     colorScheme={selectedOrder.paid ? 'green' : 'red'}
-//                   >
-//                     {selectedOrder.paid ? 'Paid' : 'Pending'}
-//                   </Tag>
-//                 </GridItem>
-//               </Grid>
-//               <Divider my={2} />
-//               <Text fontSize="lg">
-//                 <strong>Order Total: </strong>₹{selectedOrder.orderTotal}
-//               </Text>
-//               <Divider my={2} />
-//               <Text fontSize="lg" fontWeight="bold">
-//                 Items:
-//               </Text>
-
-//               <Accordion allowToggle>
-//                 {['simple_wash', 'power_clean', 'dry_clean'].map((washType) => {
-//                   const itemsByWashType = selectedOrder.items.filter(
-//                     (item) => item.washType === washType
-//                   );
-
-//                   if (itemsByWashType.length === 0) {
-//                     return null;
-//                   }
-
-//                   return (
-//                     <AccordionItem key={washType}>
-//                       <AccordionButton>
-//                         <Box
-//                           flex="1"
-//                           textAlign="left"
-//                           fontSize="lg"
-//                           fontWeight="bold"
-//                           color={
-//                             washType === 'simple_wash'
-//                               ? 'blue.500'
-//                               : washType === 'power_clean'
-//                                 ? 'orange.500'
-//                                 : 'purple.500'
-//                           }
-//                         >
-//                           {washType === 'simple_wash'
-//                             ? 'Simple Wash'
-//                             : washType === 'power_clean'
-//                               ? 'Power Clean'
-//                               : 'Dry Clean'}
-//                         </Box>
-//                         <AccordionIcon />
-//                       </AccordionButton>
-//                       <AccordionPanel pb={4}>
-//                         <Table
-//                           variant="simple"
-//                           sx={{
-//                             th: { padding: '8px', textAlign: 'center' },
-//                             td: { padding: '8px', textAlign: 'center' },
-//                           }}
-//                         >
-//                           <Thead>
-//                             <Tr>
-//                               <Th>Name</Th>
-//                               <Th>Quantity</Th>
-//                               <Th>Price per Item</Th>
-//                             </Tr>
-//                           </Thead>
-//                           <Tbody>
-//                             {itemsByWashType.map((item, index) => (
-//                               <Tr key={index}>
-//                                 <Td>{item.name}</Td>
-//                                 <Td>{item.quantity}</Td>
-//                                 <Td>₹{item.pricePerItem}</Td>
-//                               </Tr>
-//                             ))}
-//                           </Tbody>
-//                         </Table>
-//                       </AccordionPanel>
-//                     </AccordionItem>
-//                   );
-//                 })}
-//               </Accordion>
-//               <Divider my={2} />
-//             </ModalBody>
-//             <ModalFooter>
-//               <Button
-//                 bg="#ce1567"
-//                 color="#ffffff"
-//                 _hover={{ bg: '#bf0055' }}
-//                 mr={3}
-//                 onClick={onClose}
-//               >
-//                 Close
-//               </Button>
-//             </ModalFooter>
-//           </ModalContent>
-//         </Modal>
-//       )}
-//     </VStack>
-//   );
-// }
-
-// export default LaundererOrdersDetail;
-
-
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  CheckboxGroup,
-  Divider,
-  Flex,
-  Grid,
-  GridItem,
-  HStack,
-  IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-  Switch,
-  Table,
-  Tag,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  VStack,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { MdDelete } from 'react-icons/md';
 import useAuthStore from '../Store/AuthStore';
 import {
   getAllOrders,
@@ -539,23 +12,18 @@ function LaundererOrdersDetail() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState(['all']);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const toast = useToast();
   const { userName } = useAuthStore((state) => ({
     userName: state.userName,
   }));
   
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
+  
   const handleToast = (title, description, status) => {
-    toast({
-      position: 'top',
-      title,
-      description,
-      status,
-      duration: 5000,
-      isClosable: true,
-    });
+    console.log(`${status}: ${title} - ${description}`);
   };
 
   useEffect(() => {
@@ -594,71 +62,6 @@ function LaundererOrdersDetail() {
     }
   };
 
-  // Add toggle handler functions
-  const handleUpdateAcceptedStatus = async (order_id) => {
-    try {
-      const response = await updateAcceptedStatus(order_id);
-
-      if (response.status === 200) {
-        const notification = {
-          launderer: userName,
-          message: `Your order with Order ID: ${order_id} has been accepted.`,
-          student: '',
-          orderId: order_id,
-        };
-        const notifResponse = await postNotif(notification);
-
-        if (notifResponse.status !== 500) {
-          console.log(notifResponse);
-        }
-        setOrders((prevOrders) => {
-          return prevOrders.map((order) => {
-            if (order._id === order_id) {
-              return { ...order, acceptedStatus: true };
-            }
-            return order;
-          });
-        });
-        handleToast('Success', 'Order accepted successfully', 'success');
-        onClose();
-      }
-    } catch (err) {
-      handleToast('Some Error Occurred', err.message, 'error');
-    }
-  };
-
-  const handleUpdateDeliveredStatus = async (order_id) => {
-    try {
-      const response = await updateDeliveryStatus(order_id);
-
-      if (response.status === 200) {
-        const notification = {
-          launderer: userName,
-          message: `Your order with Order ID: ${order_id} has been delivered.`,
-          student: '',
-          orderId: order_id,
-        };
-        const notifResponse = await postNotif(notification);
-
-        if (notifResponse.status !== 500) {
-          console.log(notifResponse);
-        }
-        setOrders((prevOrders) => {
-          return prevOrders.map((order) => {
-            if (order._id === order_id) {
-              return { ...order, deliveredStatus: true };
-            }
-            return order;
-          });
-        });
-        handleToast('Success', 'Order marked as delivered', 'success');
-        onClose();
-      }
-    } catch (err) {
-      handleToast('Some Error Occurred', err.message, 'error');
-    }
-  };
-
   const filteredOrders = orders.filter((order) => {
     if (selectedFilters.includes('all')) return true;
 
@@ -673,9 +76,9 @@ function LaundererOrdersDetail() {
 
   if (loading) {
     return (
-      <Center>
-        <Spinner size="xl" />
-      </Center>
+      <div className="flex justify-center items-center h-64">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
     );
   }
 
@@ -684,300 +87,289 @@ function LaundererOrdersDetail() {
   }
 
   return (
-    <VStack align="start" gap={14} ml="8rem" h="100vh" overflow="hidden">
-      <Text fontSize="2rem" fontWeight="bold">
+    <div className="flex flex-col items-start gap-14 ml-32 h-screen overflow-hidden">
+      <h2 className="text-3xl font-bold">
         Order Details:
-      </Text>
-      <CheckboxGroup>
-        <HStack
-          gap={8}
-          overflowX="scroll"
-          css={{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-            },
-            'scrollbar-width': 'none',
+      </h2>
+      <div>
+        <div
+          className="flex gap-8 overflow-x-scroll"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
           }}
         >
-          <Checkbox
-            isChecked={selectedFilters.includes('all')}
-            onChange={() => handleFilterChange('all')}
-          >
-            All
-          </Checkbox>
-          <Checkbox
-            isChecked={selectedFilters.includes('accepted')}
-            onChange={() => handleFilterChange('accepted')}
-          >
-            Accepted
-          </Checkbox>
-          <Checkbox
-            isChecked={selectedFilters.includes('pickedUp')}
-            onChange={() => handleFilterChange('pickedUp')}
-          >
-            Picked Up
-          </Checkbox>
-          <Checkbox
-            isChecked={selectedFilters.includes('delivered')}
-            onChange={() => handleFilterChange('delivered')}
-          >
-            Delivered
-          </Checkbox>
-          <Checkbox
-            onChange={() => handleFilterChange('paid')}
-            isChecked={selectedFilters.includes('paid')}
-          >
-            Paid
-          </Checkbox>
-        </HStack>
-      </CheckboxGroup>
-      <Box
-        w="75vw"
-        h="calc(100vh - 300px)"
-        overflowX="auto"
-        overflowY="auto"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: '#f1f1f1',
-            borderRadius: '10px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: '#888',
-            borderRadius: '10px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            background: '#555',
-          },
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('all')}
+              onChange={() => handleFilterChange('all')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>All</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('accepted')}
+              onChange={() => handleFilterChange('accepted')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Accepted</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('pickedUp')}
+              onChange={() => handleFilterChange('pickedUp')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Picked Up</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('delivered')}
+              onChange={() => handleFilterChange('delivered')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Delivered</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('paid')}
+              onChange={() => handleFilterChange('paid')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Paid</span>
+          </label>
+        </div>
+      </div>
+      <div
+        className="w-[75vw] h-[calc(100vh-300px)] overflow-auto"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#888 #f1f1f1',
         }}
       >
-        <Table variant="simple" size="sm">
-          <Thead position="sticky" top={0} bg="white" zIndex={1}>
-            <Tr>
-              <Th textAlign="right">Order ID</Th>
-              <Th textAlign="right">Order Total</Th>
-              <Th textAlign="right">Pickup Date</Th>
-              <Th textAlign="right">Total Items</Th>
-              <Th textAlign="right">Accepted Status</Th>
-              <Th textAlign="right">Delivery Status</Th>
-              <Th textAlign="right">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+        <table className="w-full text-sm border-collapse">
+          <thead className="sticky top-0 bg-white z-10">
+            <tr>
+              <th className="text-right p-2 border-b">Order ID</th>
+              <th className="text-right p-2 border-b">Order Total</th>
+              <th className="text-right p-2 border-b">Pickup Date</th>
+              <th className="text-right p-2 border-b">Total Items</th>
+              <th className="text-right p-2 border-b">Accepted Status</th>
+              <th className="text-right p-2 border-b">Delivery Status</th>
+              <th className="text-right p-2 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
             {filteredOrders.map((order) => (
-              <Tr key={order._id}>
-                <Td textAlign="right">{order._id}</Td>
-                <Td textAlign="right">₹{order.orderTotal}</Td>
-                <Td textAlign="right">{order.pickupDate}</Td>
-                <Td textAlign="right">{getTotalQuantity(order.items)}</Td>
-                <Td textAlign="right">
-                  <Tag
-                    size="lg"
-                    colorScheme={order.acceptedStatus ? 'green' : 'red'}
+              <tr key={order._id} className="border-b hover:bg-gray-50">
+                <td className="text-right p-2">{order._id}</td>
+                <td className="text-right p-2">₹{order.orderTotal}</td>
+                <td className="text-right p-2">{order.pickupDate}</td>
+                <td className="text-right p-2">{getTotalQuantity(order.items)}</td>
+                <td className="text-right p-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      order.acceptedStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {order.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-                  </Tag>
-                </Td>
-                <Td textAlign="right">
-                  <Tag
-                    size="lg"
-                    colorScheme={order.deliveredStatus ? 'green' : 'red'}
+                  </span>
+                </td>
+                <td className="text-right p-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      order.deliveredStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {order.deliveredStatus ? 'Delivered' : 'Not Delivered'}
-                  </Tag>
-                </Td>
-                <Td textAlign="right">
-                  <Flex gap={4} w="fit-content" justify="flex-end">
-                    <Button
-                      color="#ce1567"
+                  </span>
+                </td>
+                <td className="text-right p-2">
+                  <div className="flex gap-2 justify-end items-center">
+                    <button
+                      className="text-[#ce1567] hover:text-[#a0114d] px-2 py-1 rounded"
                       onClick={() => handleCardClick(order)}
                     >
                       View Details
-                    </Button>
-                  </Flex>
-                </Td>
-              </Tr>
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
-          </Tbody>
-        </Table>
-      </Box>
+          </tbody>
+        </table>
+      </div>
 
       {selectedOrder && (
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent
-            width="90%"
-            border="2px solid #ce1567"
-            borderRadius="0.5rem"
-          >
-            <ModalHeader />
-            <ModalCloseButton />
-            <ModalBody>
-              <Text fontSize="xl" fontWeight="bold">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg border-2 border-[#ce1567] w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-semibold">Order Details</h2>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-6">
+              <h3 className="text-xl font-bold">
                 Order ID: {selectedOrder._id}
-              </Text>
-              <Divider my={2} />
-              <Text fontSize="lg" fontWeight="bold" color="purple.500">
+              </h3>
+              <hr className="my-2" />
+              <h4 className="text-lg font-bold text-purple-500">
                 Student Details:
-              </Text>
-              <Divider my={2} />
-              <Grid templateColumns="repeat(2, 1fr)" gap={2}>
-                <GridItem>
-                  <Text>
+              </h4>
+              <hr className="my-2" />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p>
                     <strong>Student Username:</strong>{' '}
-                    {selectedOrder.user?.username}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                    {selectedOrder.user.username}
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Contact No.:</strong>{' '}
-                    {selectedOrder.user?.phone_number}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
-                    <strong>Roll No.:</strong> {selectedOrder.user?.roll_number}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
-                    <strong>Hostel:</strong> {selectedOrder.user?.hostel}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
-                    <strong>Room No.:</strong> {selectedOrder.user?.room_number}
-                  </Text>
-                </GridItem>
-              </Grid>
-              <Divider my={2} />
-              <Text fontSize="lg" fontWeight="bold" color="orange.500">
+                    {selectedOrder.user.phone_number}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <strong>Roll No.:</strong> {selectedOrder.user.roll_number}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <strong>Hostel:</strong> {selectedOrder.user.hostel}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <strong>Room No.:</strong> {selectedOrder.user.room_number}
+                  </p>
+                </div>
+              </div>
+              <hr className="my-2" />
+              <h4 className="text-lg font-bold text-orange-500">
                 Order Details:
-              </Text>
-              <Divider my={2} />
-              <Grid templateColumns="repeat(2, 1fr)" gap={2}>
-                <GridItem>
-                  <Text>
+              </h4>
+              <hr className="my-2" />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p>
                     <strong>Pickup Address:</strong>{' '}
                     {selectedOrder.pickupAddress}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Delivery Address:</strong>{' '}
                     {selectedOrder.deliveryAddress}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Pickup Date:</strong> {selectedOrder.pickupDate}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Pickup Time:</strong> {selectedOrder.pickupTime}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Delivery Date:</strong> {selectedOrder.deliveryDate}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Delivery Time:</strong> {selectedOrder.deliveryTime}
-                  </Text>
-                </GridItem>
-              </Grid>
-              <Divider my={2} />
-              {/* Status section with toggles */}
-              <Grid templateColumns="repeat(2, 1fr)" gap={4} my={4}>
-                <GridItem>
-                  <HStack justify="space-between">
-                    <VStack align="start">
-                      <Text>
-                        <strong>Accepted Status:</strong>
-                      </Text>
-                      <Tag
-                        size="lg"
-                        colorScheme={selectedOrder.acceptedStatus ? 'green' : 'red'}
-                      >
-                        {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-                      </Tag>
-                    </VStack>
-                    {!selectedOrder.acceptedStatus && (
-                      <Switch
-                        size="md"
-                        colorScheme="green"
-                        onChange={() => handleUpdateAcceptedStatus(selectedOrder._id)}
-                      />
-                    )}
-                  </HStack>
-                </GridItem>
-                <GridItem>
-                  <HStack justify="space-between">
-                    <VStack align="start">
-                      <Text>
-                        <strong>Delivery Status:</strong>
-                      </Text>
-                      <Tag
-                        size="lg"
-                        colorScheme={selectedOrder.deliveredStatus ? 'green' : 'red'}
-                      >
-                        {selectedOrder.deliveredStatus ? 'Delivered' : 'Not Delivered'}
-                      </Tag>
-                    </VStack>
-                    {selectedOrder.acceptedStatus && 
-                     selectedOrder.pickUpStatus && 
-                     !selectedOrder.deliveredStatus && (
-                      <Switch
-                        size="md"
-                        colorScheme="green"
-                        onChange={() => handleUpdateDeliveredStatus(selectedOrder._id)}
-                      />
-                    )}
-                  </HStack>
-                </GridItem>
-                <GridItem>
-                  <VStack align="start">
-                    <Text>
-                      <strong>Pickup Status:</strong>
-                    </Text>
-                    <Tag
-                      size="lg"
-                      colorScheme={selectedOrder.pickUpStatus ? 'green' : 'red'}
-                    >
-                      {selectedOrder.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
-                    </Tag>
-                  </VStack>
-                </GridItem>
-                <GridItem>
-                  <VStack align="start">
-                    <Text>
-                      <strong>Payment Status:</strong>
-                    </Text>
-                    <Tag
-                      size="lg"
-                      colorScheme={selectedOrder.paid ? 'green' : 'red'}
-                    >
-                      {selectedOrder.paid ? 'Paid' : 'Pending'}
-                    </Tag>
-                  </VStack>
-                </GridItem>
-              </Grid>
-              <Divider my={2} />
-              <Text fontSize="lg">
+                  </p>
+                </div>
+              </div>
+              <hr className="my-2" />
+              <div className="grid grid-cols-2 gap-4 my-4">
+                <div>
+                  <p>
+                    <strong>Accepted Status:</strong>
+                  </p>
+                  <span
+                    className={`px-2 py-1 rounded text-sm font-medium ${
+                      selectedOrder.acceptedStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
+                  </span>
+                </div>
+                <div>
+                  <p>
+                    <strong>Delivery Status:</strong>
+                  </p>
+                  <span
+                    className={`px-2 py-1 rounded text-sm font-medium ${
+                      selectedOrder.deliveredStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {selectedOrder.deliveredStatus
+                      ? 'Delivered'
+                      : 'Not Delivered'}
+                  </span>
+                </div>
+                <div>
+                  <p>
+                    <strong>Pickup Status:</strong>
+                  </p>
+                  <span
+                    className={`px-2 py-1 rounded text-sm font-medium ${
+                      selectedOrder.pickUpStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {selectedOrder.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
+                  </span>
+                </div>
+                <div>
+                  <p>
+                    <strong>Payment Status:</strong>
+                  </p>
+                  <span
+                    className={`px-2 py-1 rounded text-sm font-medium ${
+                      selectedOrder.paid
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {selectedOrder.paid ? 'Paid' : 'Pending'}
+                  </span>
+                </div>
+              </div>
+              <hr className="my-2" />
+              <p className="text-lg">
                 <strong>Order Total: </strong>₹{selectedOrder.orderTotal}
-              </Text>
-              <Divider my={2} />
-              <Text fontSize="lg" fontWeight="bold">
+              </p>
+              <hr className="my-2" />
+              <p className="text-lg font-bold">
                 Items:
-              </Text>
+              </p>
 
-              <Accordion allowToggle>
+              <div className="accordion space-y-2">
                 {['simple_wash', 'power_clean', 'dry_clean'].map((washType) => {
                   const itemsByWashType = selectedOrder.items.filter(
                     (item) => item.washType === washType
@@ -988,76 +380,62 @@ function LaundererOrdersDetail() {
                   }
 
                   return (
-                    <AccordionItem key={washType}>
-                      <AccordionButton>
-                        <Box
-                          flex="1"
-                          textAlign="left"
-                          fontSize="lg"
-                          fontWeight="bold"
-                          color={
+                    <details key={washType} className="border border-gray-200 rounded-lg">
+                      <summary className="cursor-pointer p-4 hover:bg-gray-50">
+                        <span
+                          className={`text-lg font-bold ${
                             washType === 'simple_wash'
-                              ? 'blue.500'
+                              ? 'text-blue-500'
                               : washType === 'power_clean'
-                                ? 'orange.500'
-                                : 'purple.500'
-                          }
+                                ? 'text-orange-500'
+                                : 'text-purple-500'
+                          }`}
                         >
                           {washType === 'simple_wash'
                             ? 'Simple Wash'
                             : washType === 'power_clean'
                               ? 'Power Clean'
                               : 'Dry Clean'}
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel pb={4}>
-                        <Table
-                          variant="simple"
-                          sx={{
-                            th: { padding: '8px', textAlign: 'center' },
-                            td: { padding: '8px', textAlign: 'center' },
-                          }}
-                        >
-                          <Thead>
-                            <Tr>
-                              <Th>Name</Th>
-                              <Th>Quantity</Th>
-                              <Th>Price per Item</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
+                        </span>
+                      </summary>
+                      <div className="p-4 pt-0">
+                        <table className="w-full border-collapse">
+                          <thead>
+                            <tr>
+                              <th className="border border-gray-300 p-2 text-center">Name</th>
+                              <th className="border border-gray-300 p-2 text-center">Quantity</th>
+                              <th className="border border-gray-300 p-2 text-center">Price per Item</th>
+                            </tr>
+                          </thead>
+                          <tbody>
                             {itemsByWashType.map((item, index) => (
-                              <Tr key={index}>
-                                <Td>{item.name}</Td>
-                                <Td>{item.quantity}</Td>
-                                <Td>₹{item.pricePerItem}</Td>
-                              </Tr>
+                              <tr key={index}>
+                                <td className="border border-gray-300 p-2 text-center">{item.name}</td>
+                                <td className="border border-gray-300 p-2 text-center">{item.quantity}</td>
+                                <td className="border border-gray-300 p-2 text-center">₹{item.pricePerItem}</td>
+                              </tr>
                             ))}
-                          </Tbody>
-                        </Table>
-                      </AccordionPanel>
-                    </AccordionItem>
+                          </tbody>
+                        </table>
+                      </div>
+                    </details>
                   );
                 })}
-              </Accordion>
-              <Divider my={2} />
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                bg="#ce1567"
-                color="#ffffff"
-                _hover={{ bg: '#bf0055' }}
-                mr={3}
+              </div>
+              <hr className="my-2" />
+            </div>
+            <div className="flex justify-end p-6 border-t border-gray-200">
+              <button
+                className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition-colors"
                 onClick={onClose}
               >
                 Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </VStack>
+    </div>
   );
 }
 

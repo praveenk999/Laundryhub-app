@@ -1,88 +1,39 @@
 import React from 'react';
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Box, Image, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const CardWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-`;
-const Card = styled(motion.div)`
-    width:15rem;
-    height:15rem;
-    min-width:{{base:'auto', md:'15rem'}};
-    min-height:{{base:'auto', md:'15rem'}};
-    display:flex;
-    flex-direction:column;
-    border-radius:1.5rem;
-    box-shadow:1px 2px 7px 1px #584BAC90;
-    background-color: #fff7;
-    margin:1rem;
-    position:relative;
-    cursor:grab;
-    padding:1rem;
-    justify-content:center;
-    align-items:center;
-`;
-const CircleWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  min-height: 100%;
-  overflow: hidden;
-  border-top-right-radius: 1.5rem;
-  border-top-left-radius: 1.5rem;
-  border-bottom-right-radius: 1.5rem;
-  border-bottom-left-radius: 1.5rem;
-  background-color: #584bac20;
-`;
-const Circle = styled.div`
-  position: relative;
-  width: 90%;
-  height: 13rem;
-  background-color: #584bac20;
-  border-radius: 50%;
-  padding: 1rem;
-  margin: auto;
-  margin-top: 1rem;
-`;
 function Service(props) {
   const navigate = useNavigate();
+  
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      px="0rem"
-      py="0rem"
-      margin="auto"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <CardWrapper>
-        <Card>
-          <CircleWrapper>
-            <Circle>
-              <Image
-                src={`assets/${props.task.image}`}
-                margin="auto"
-                w="85%"
+    <div className="flex flex-col px-0 py-0 mx-auto items-center justify-center">
+      <div className="flex justify-center items-center w-full">
+        <motion.div className="w-60 h-60 min-w-60 min-h-60 flex flex-col rounded-3xl shadow-lg shadow-[#584BAC]/30 bg-white/50 m-4 relative cursor-grab p-4 justify-center items-center">
+          <div className="absolute top-0 left-0 min-w-full min-h-full overflow-hidden rounded-3xl bg-[#584bac]/20">
+            <div className="relative w-[90%] h-52 bg-[#584bac]/20 rounded-full p-4 mx-auto mt-4">
+              <button
+                type="button"
                 onClick={() => {
                   navigate('/OrderList');
                 }}
-              />
-            </Circle>
-          </CircleWrapper>
-        </Card>
-      </CardWrapper>
-      <Text fontWeight="semibold" fontSize="1.5rem" color="#464550">
+                className="w-[85%] mx-auto cursor-pointer bg-transparent border-none p-0"
+              >
+                <img
+                  src={`assets/${props.task.image}`}
+                  alt={props.task.title}
+                  className="w-full"
+                />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+      
+      <h3 className="font-semibold text-2xl text-[#464550]">
         {props.task.title}
-      </Text>
-    </Box>
+      </h3>
+    </div>
   );
 }
 Service.propTypes = {

@@ -1,44 +1,7 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  CheckboxGroup,
-  Divider,
-  Flex,
-  Grid,
-  GridItem,
-  HStack,
-  IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-  Switch,
-  Table,
-  Tag,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  VStack,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { MdDelete } from 'react-icons/md';
+import { IoClose, IoChevronDown, IoChevronUp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../Store/AuthStore';
 import {
@@ -55,25 +18,21 @@ function OrderDetail() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedFilters, setSelectedFilters] = useState(['all']);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const toast = useToast();
   const navigate = useNavigate();
   const { userName, userHostel } = useAuthStore((state) => ({
     userName: state.userName,
     userHostel: state.userHostel,
   }));
-  const handleToast = (title, description, status) => {
-    toast({
-      position: 'top',
-      title,
-      description,
-      status,
-      duration: 1000,
-      isClosable: true,
-    });
+
+  const handleToast = (title, description) => {
+    alert(`${title}: ${description}`);
   };
+
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
 
   useEffect(() => {
     const getOrders = async () => {
@@ -133,23 +92,22 @@ function OrderDetail() {
         currency: 'INR',
         name: 'LaundryHub',
         description: 'Order Payment',
-        image: 'http://localhost:5173/assets/favicon.svg',
+        image: 'http:
         order_id: orderDetails.id,
         async handler(resp) {
           try {
             let validatePayment;
             if (dev_env === 'development') {
               validatePayment = await axios.put(
-                'http://localhost:4000/payment/validate',
+                'http:
                 { ...resp, order_id: order._id }
               );
             } else if (dev_env === 'production') {
               validatePayment = await axios.put(
-                'https://laundryhub-api.vercel.app/payment/validate',
+                'https:
                 { ...resp, order_id: order._id }
               );
             }
-            // eslint-disable-next-line no-unused-vars
             const validateResponse = await validatePayment.data;
             const notification = {
               student: userName,
@@ -167,7 +125,6 @@ function OrderDetail() {
               'success'
             );
 
-            // set the paid field of this order to true in the filteredOrders state
             setOrders((prevOrders) =>
               prevOrders.map((prevOrder) => {
                 if (prevOrder._id === order._id) {
@@ -188,7 +145,6 @@ function OrderDetail() {
         },
       };
       const rzp1 = new window.Razorpay(options);
-      // eslint-disable-next-line func-names
       rzp1.on('payment.failed', function (result) {
         alert(result.error.code);
         alert(result.error.description);
@@ -270,294 +226,294 @@ function OrderDetail() {
 
   if (loading) {
     return (
-      <Center>
-        <Spinner size="xl" />
-      </Center>
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#ce1567]"></div>
+      </div>
     );
   }
 
   if (error) {
-    toast({
-      position: 'top',
-      title: 'Error',
-      description: 'Please login again',
-      status: 'error',
-      duration: 1000,
-      isClosable: true,
-      onCloseComplete: () => {
-        navigate('/login');
-      },
-    });
+    handleToast('Error', 'Please login again');
+    navigate('/login');
+    return null;
   }
 
   return (
-    <VStack align="start" gap={14} ml="8rem" h="100vh" overflow="hidden">
-      <Text fontSize="2rem" fontWeight="bold">
+    <div className="flex flex-col items-start gap-14 ml-32 h-screen overflow-hidden">
+      <h2 className="text-3xl font-bold">
         Order Details:
-      </Text>
-      <CheckboxGroup>
-        <HStack
-          gap={8}
-          overflowX="scroll"
-          css={{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-            },
-            'scrollbar-width': 'none',
+      </h2>
+      <div>
+        <div
+          className="flex gap-8 overflow-x-scroll"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
           }}
         >
-          <Checkbox
-            isChecked={selectedFilters.includes('all')}
-            onChange={() => handleFilterChange('all')}
-          >
-            All
-          </Checkbox>
-          <Checkbox
-            isChecked={selectedFilters.includes('accepted')}
-            onChange={() => handleFilterChange('accepted')}
-          >
-            Accepted
-          </Checkbox>
-          <Checkbox
-            isChecked={selectedFilters.includes('pickedUp')}
-            onChange={() => handleFilterChange('pickedUp')}
-          >
-            Picked Up
-          </Checkbox>
-          <Checkbox
-            isChecked={selectedFilters.includes('delivered')}
-            onChange={() => handleFilterChange('delivered')}
-          >
-            Delivered
-          </Checkbox>
-          <Checkbox
-            onChange={() => handleFilterChange('paid')}
-            isChecked={selectedFilters.includes('paid')}
-          >
-            Paid
-          </Checkbox>
-        </HStack>
-      </CheckboxGroup>
-      <Box
-        w="75vw"
-        h="calc(100vh - 300px)"
-        overflowX="auto"
-        overflowY="auto"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: '#f1f1f1',
-            borderRadius: '10px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: '#888',
-            borderRadius: '10px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            background: '#555',
-          },
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('all')}
+              onChange={() => handleFilterChange('all')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>All</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('accepted')}
+              onChange={() => handleFilterChange('accepted')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Accepted</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('pickedUp')}
+              onChange={() => handleFilterChange('pickedUp')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Picked Up</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('delivered')}
+              onChange={() => handleFilterChange('delivered')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Delivered</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedFilters.includes('paid')}
+              onChange={() => handleFilterChange('paid')}
+              className="form-checkbox h-4 w-4 text-[#ce1567]"
+            />
+            <span>Paid</span>
+          </label>
+        </div>
+      </div>
+      <div
+        className="w-[75vw] h-[calc(100vh-300px)] overflow-auto"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#888 #f1f1f1',
         }}
       >
-        <Table variant="simple" size="sm">
-          <Thead position="sticky" top={0} bg="white" zIndex={1}>
-            <Tr>
-              <Th textAlign="center">Order ID</Th>
-              <Th textAlign="center">Order Total</Th>
-              <Th textAlign="center">Pickup Date</Th>
-              <Th textAlign="center">Total Items</Th>
-              <Th textAlign="center">Accepted Status</Th>
-              <Th textAlign="center">Delivery Status</Th>
-              <Th textAlign="center">Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+        <table className="w-full text-sm border-collapse">
+          <thead className="sticky top-0 bg-white z-10">
+            <tr>
+              <th className="text-center p-2 border-b">Order ID</th>
+              <th className="text-center p-2 border-b">Order Total</th>
+              <th className="text-center p-2 border-b">Pickup Date</th>
+              <th className="text-center p-2 border-b">Total Items</th>
+              <th className="text-center p-2 border-b">Accepted Status</th>
+              <th className="text-center p-2 border-b">Delivery Status</th>
+              <th className="text-center p-2 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
             {filteredOrders.map((order) => (
-              <Tr key={order._id}>
-                <Td textAlign="center">{order._id}</Td>
-                <Td textAlign="center">₹{order.orderTotal}</Td>
-                <Td textAlign="center">{order.pickupDate}</Td>
-                <Td textAlign="center">{getTotalQuantity(order.items)}</Td>
-                <Td textAlign="center">
-                  <Tag
-                    size="lg"
-                    colorScheme={order.acceptedStatus ? 'green' : 'red'}
+              <tr key={order._id} className="border-b hover:bg-gray-50">
+                <td className="text-center p-2">{order._id}</td>
+                <td className="text-center p-2">₹{order.orderTotal}</td>
+                <td className="text-center p-2">{order.pickupDate}</td>
+                <td className="text-center p-2">{getTotalQuantity(order.items)}</td>
+                <td className="text-center p-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      order.acceptedStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {order.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-                  </Tag>
-                </Td>
-                <Td textAlign="center">
-                  <Tag
-                    size="lg"
-                    colorScheme={order.deliveredStatus ? 'green' : 'red'}
+                  </span>
+                </td>
+                <td className="text-center p-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      order.deliveredStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {order.deliveredStatus ? 'Delivered' : 'Not Delivered'}
-                  </Tag>
-                </Td>
-                <Td textAlign="center">
-                  <Flex gap={4} w="fit-content">
-                    <Button
-                      color="#ce1567"
+                  </span>
+                </td>
+                <td className="text-center p-2">
+                  <div className="flex gap-2 justify-center items-center">
+                    <button
+                      className="text-[#ce1567] hover:text-[#a0114d] px-2 py-1 rounded"
                       onClick={() => handleCardClick(order)}
                     >
                       View Details
-                    </Button>
-                    <Button
-                      color="#ffffff"
-                      bgColor="green.500"
-                      isDisabled={order.paid}
-                      display={
-                        !order.acceptedStatus || !order.pickUpStatus
-                          ? 'none'
-                          : 'block'
-                      }
-                      _hover={{ bgColor: 'green.600' }}
+                    </button>
+                    <button
+                      className={`px-3 py-1 rounded text-white ${
+                        order.paid || !order.acceptedStatus || !order.pickUpStatus
+                          ? 'bg-gray-400 cursor-not-allowed hidden'
+                          : 'bg-green-500 hover:bg-green-600'
+                      }`}
+                      disabled={order.paid || !order.acceptedStatus || !order.pickUpStatus}
+                      style={{
+                        display: !order.acceptedStatus || !order.pickUpStatus ? 'none' : 'block'
+                      }}
                       onClick={() => handlePayment(order)}
                     >
                       Pay
-                    </Button>
-                    <IconButton
-                      colorScheme="red"
-                      aria-label="Delete Order"
-                      icon={<MdDelete size={24} />}
-                      // button should be abled either when the order is not accepted, or when the order is paid and delivered.
-                      isDisabled={
+                    </button>
+                    <button
+                      className={`p-2 rounded text-white ${
+                        order.acceptedStatus && (!order.paid || !order.deliveredStatus)
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-red-500 hover:bg-red-600'
+                      }`}
+                      disabled={
                         order.acceptedStatus &&
                         (!order.paid || !order.deliveredStatus)
                       }
                       onClick={() => handleDeleteOrder(order._id)}
-                    />
-                  </Flex>
-                </Td>
-              </Tr>
+                    >
+                      <MdDelete size={20} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
-          </Tbody>
-          </Table>
-        </Box>
+          </tbody>
+        </table>
+      </div>
 
       {selectedOrder && (
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent
-            width="90%"
-            border="2px solid #ce1567"
-            borderRadius="0.5rem"
-          >
-            <ModalHeader />
-            <ModalCloseButton />
-            <ModalBody>
-              <Text fontSize="xl" fontWeight="bold">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg border-2 border-[#ce1567] w-[90%] max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-semibold">Order Details</h2>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-6">
+              <h3 className="text-xl font-bold mb-2">
                 Order ID: {selectedOrder._id}
-              </Text>
-              <Divider my={2} />
-              <Text fontSize="xl" fontWeight="bold">
+              </h3>
+              <hr className="my-2" />
+              <p className="text-xl font-bold mb-2">
                 <strong>Order Total:</strong> ₹{selectedOrder.orderTotal}
-              </Text>
-              <Divider my={2} />
-              <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-                <GridItem>
-                  <Text>
+              </p>
+              <hr className="my-2" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p>
                     <strong>Pickup Address:</strong>{' '}
                     {selectedOrder.pickupAddress}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Delivery Address:</strong>{' '}
                     {selectedOrder.deliveryAddress}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Pickup Date:</strong> {selectedOrder.pickupDate}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Pickup Time:</strong> {selectedOrder.pickupTime}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Delivery Date:</strong> {selectedOrder.deliveryDate}
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text>
+                  </p>
+                </div>
+                <div>
+                  <p>
                     <strong>Delivery Time:</strong> {selectedOrder.deliveryTime}
-                  </Text>
-                </GridItem>
-              </Grid>
-              <Divider my={2} />
-              <Grid templateColumns="repeat(2, 1fr)" gap={4} my={4}>
-                <GridItem>
-                  <Text>
-                    <strong>Accepted Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={selectedOrder.acceptedStatus ? 'green' : 'red'}
+                  </p>
+                </div>
+              </div>
+              <hr className="my-2" />
+              <div className="grid grid-cols-2 gap-4 my-4">
+                <div>
+                  <p><strong>Accepted Status:</strong></p>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      selectedOrder.acceptedStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {selectedOrder.acceptedStatus ? 'Accepted' : 'Not Accepted'}
-                  </Tag>
-                </GridItem>
-                <GridItem>
-                  <Text>
-                    <strong>Delivery Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={
-                      selectedOrder.deliveredStatus ? 'green' : 'red'
-                    }
+                  </span>
+                </div>
+                <div>
+                  <p><strong>Delivery Status:</strong></p>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      selectedOrder.deliveredStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {selectedOrder.deliveredStatus
                       ? 'Delivered'
                       : 'Not Delivered'}
-                  </Tag>
-                </GridItem>
-                <GridItem>
-                  <Text>
-                    <strong>Pickup Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={selectedOrder.pickUpStatus ? 'green' : 'red'}
+                  </span>
+                </div>
+                <div>
+                  <p><strong>Pickup Status:</strong></p>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      selectedOrder.pickUpStatus
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {selectedOrder.pickUpStatus ? 'Picked Up' : 'Not Picked Up'}
-                  </Tag>
-                  <Switch
-                    size="md"
-                    ml={2}
-                    colorScheme="green"
-                    display={
-                      !selectedOrder.acceptedStatus ||
-                      selectedOrder.pickUpStatus
-                        ? 'none'
-                        : ''
-                    }
-                    onChange={() => handleUpdatePickupStatus(selectedOrder._id)}
-                  />
-                </GridItem>
-                <GridItem>
-                  <Text>
-                    <strong>Payment Status:</strong>
-                  </Text>
-                  <Tag
-                    size="lg"
-                    colorScheme={selectedOrder.paid ? 'green' : 'red'}
+                  </span>
+                  {!selectedOrder.acceptedStatus || selectedOrder.pickUpStatus ? null : (
+                    <label className="inline-flex items-center ml-2">
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        onChange={() => handleUpdatePickupStatus(selectedOrder._id)}
+                      />
+                      <div className="relative">
+                        <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                        <div className="absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition-transform duration-300 ease-in-out"></div>
+                      </div>
+                    </label>
+                  )}
+                </div>
+                <div>
+                  <p><strong>Payment Status:</strong></p>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      selectedOrder.paid
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
                   >
                     {selectedOrder.paid ? 'Paid' : 'Pending'}
-                  </Tag>
-                </GridItem>
-              </Grid>
-              <Divider my={2} />
-              <Text fontSize="xl" fontWeight="bold" mb={2}>
-                Items
-              </Text>
-              <Accordion allowToggle>
+                  </span>
+                </div>
+              </div>
+              <hr className="my-2" />
+              <h4 className="text-xl font-bold mb-2">Items</h4>
+              <div className="space-y-4">
                 {['simple_wash', 'power_clean', 'dry_clean'].map((washType) => {
                   const itemsByWashType = selectedOrder.items.filter(
                     (item) => item.washType === washType
@@ -568,70 +524,58 @@ function OrderDetail() {
                   }
 
                   return (
-                    <AccordionItem key={washType}>
-                      <AccordionButton>
-                        <Box
-                          flex="1"
-                          textAlign="left"
-                          fontSize="lg"
-                          fontWeight="bold"
-                          color={
-                            washType === 'simple_wash'
-                              ? 'blue.500'
-                              : washType === 'power_clean'
-                                ? 'orange.500'
-                                : 'purple.500'
-                          }
-                        >
-                          {washType === 'simple_wash'
-                            ? 'Simple Wash'
-                            : washType === 'power_clean'
-                              ? 'Power Clean'
-                              : 'Dry Clean'}
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel pb={4}>
-                        <Table
-                          variant="simple"
-                          sx={{
-                            th: { padding: '8px', textAlign: 'center' },
-                            td: { padding: '8px', textAlign: 'center' },
-                          }}
-                        >
-                          <Thead>
-                            <Tr>
-                              <Th>Name</Th>
-                              <Th>Quantity</Th>
-                              <Th>Price per Item</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
+                    <details key={washType} className="border rounded-lg">
+                      <summary className={`cursor-pointer p-3 text-lg font-bold ${
+                        washType === 'simple_wash'
+                          ? 'text-blue-500'
+                          : washType === 'power_clean'
+                            ? 'text-orange-500'
+                            : 'text-purple-500'
+                      }`}>
+                        {washType === 'simple_wash'
+                          ? 'Simple Wash'
+                          : washType === 'power_clean'
+                            ? 'Power Clean'
+                            : 'Dry Clean'}
+                      </summary>
+                      <div className="p-4">
+                        <table className="w-full border-collapse">
+                          <thead>
+                            <tr>
+                              <th className="text-center p-2 border-b">Name</th>
+                              <th className="text-center p-2 border-b">Quantity</th>
+                              <th className="text-center p-2 border-b">Price per Item</th>
+                            </tr>
+                          </thead>
+                          <tbody>
                             {itemsByWashType.map((item, index) => (
-                              <Tr key={index}>
-                                <Td>{item.name}</Td>
-                                <Td>{item.quantity}</Td>
-                                <Td>₹{item.pricePerItem}</Td>
-                              </Tr>
+                              <tr key={index}>
+                                <td className="text-center p-2">{item.name}</td>
+                                <td className="text-center p-2">{item.quantity}</td>
+                                <td className="text-center p-2">₹{item.pricePerItem}</td>
+                              </tr>
                             ))}
-                          </Tbody>
-                        </Table>
-                      </AccordionPanel>
-                    </AccordionItem>
+                          </tbody>
+                        </table>
+                      </div>
+                    </details>
                   );
                 })}
-              </Accordion>
-              <Divider my={2} />
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              </div>
+              <hr className="my-2" />
+            </div>
+            <div className="flex justify-end p-6 border-t">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-3"
+                onClick={onClose}
+              >
                 Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </VStack>
+    </div>
   );
 }
 

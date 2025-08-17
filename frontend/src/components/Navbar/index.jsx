@@ -1,31 +1,4 @@
-import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
-  IconButton,
-  List,
-  ListIcon,
-  ListItem,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Spacer,
-  Tag,
-  TagLabel,
-  Text,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiBell, BiLogOut, BiUserCheck, BiUserPlus } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoIosClose } from 'react-icons/io';
@@ -44,35 +17,17 @@ function Navbar() {
     clearUserNotifications,
     removeUserNotification,
     setUnreadCount,
-    setUserRole,
-    setUserName,
-    setUserPhone,
-    setUserEmail,
-    setUserHostel,
-    setUserRoomNumber,
-    setUserRollNumber,
-  } = useAuthStore((state) => ({
-    isAuth: state.isAuth,
-    userName: state.userName,
-    userNotifications: state.userNotifications,
-    unreadCount: state.unreadCount,
-    updateUserNotifications: state.updateUserNotifications,
-    clearUserNotifications: state.clearUserNotifications,
-    removeUserNotification: state.removeUserNotification,
-    setUnreadCount: state.setUnreadCount,
-    addAuth: state.addAuth,
-    removeAuth: state.removeAuth,
-    setUserName: state.setUserName,
-    setUserRole: state.setUserRole,
-    setUserEmail: state.setUserEmail,
-    setUserPhone: state.setUserPhone,
-    setUserHostel: state.setUserHostel,
-    setUserRoomNumber: state.setUserRoomNumber,
-    setUserRollNumber: state.setUserRollNumber,
-  }));
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  } = useAuthStore();
+  
   const navigate = useNavigate();
-  const toast = useToast();
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    alert(message);
+  };
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -99,40 +54,16 @@ function Navbar() {
 
   const logOut = async () => {
     try {
-      // eslint-disable-next-line
       const response = await logout();
-      toast({
-        title: 'Success',
-        description: 'User Logged Out Successfully',
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-        position: 'top',
-      });
+      showToast('User Logged Out Successfully');
       removeAuth();
       clearUserNotifications();
       setUnreadCount(0);
-      setUserName(null);
-      setUserRole(null);
-      setUserEmail(null);
-      setUserPhone(null);
-      setUserHostel(null);
-      setUserRoomNumber(null);
-      setUserRollNumber(null);
       navigate('/');
     } catch (err) {
-      toast({
-        title: 'Error',
-        description: 'Unauthorized',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-        position: 'top',
-        onCloseComplete: () => {
-          navigate('/login');
-        },
-      });
+      showToast('Unauthorized - redirecting to login');
       removeAuth();
+      navigate('/login');
     }
   };
 
@@ -150,284 +81,217 @@ function Navbar() {
   };
 
   return (
-    <Flex
-      align="center"
-      w="100%"
-      position="fixed"
-      top="0%"
-      h={['50px', '55px', '70px']}
-      boxShadow="0px 2px 3px lightgray"
-      pr={['15px', '30px']}
-      bgColor="white"
-      zIndex="1"
-    >
-      <Link to="/">
-        <Text
-          color="#584BAC"
-          fontWeight="600"
-          fontSize={['1.5rem', '1.7rem', '2.3rem', '2.7rem']}
-          ml={['20px', '30px', '40px', '50px']}
-        >
+    <nav className="fixed top-0 w-full h-12 sm:h-14 lg:h-[70px] bg-white shadow-sm z-10 flex items-center pr-4 sm:pr-8">
+      <Link to="/" className="ml-5 sm:ml-8 lg:ml-10 xl:ml-12">
+        <h1 className="text-[#584BAC] font-semibold text-xl sm:text-2xl lg:text-4xl xl:text-5xl">
           LaundryHub
-        </Text>
+        </h1>
       </Link>
-      <Spacer />
-      <Flex display={{ base: 'none', md: 'block' }}>
+      
+      <div className="flex-1"></div>
+      
+      {}
+      <div className="hidden md:block">
         {isAuth ? (
-          <Flex justify="center" align="center" gap="1.5rem">
-            <Menu>
-              <MenuButton
-                as={Button}
-                borderRadius="0.5rem"
-                variant="ghost"
-                cursor="pointer"
-                position="relative"
+          <div className="flex justify-center items-center gap-6">
+            {}
+            <div className="relative">
+              <button
+                className="rounded-lg p-2 hover:bg-gray-100 transition-colors cursor-pointer relative"
+                onClick={() => setIsNotificationMenuOpen(!isNotificationMenuOpen)}
               >
                 <BiBell
-                  className={unreadCount > 0 ? 'bell-icon' : ''}
+                  className={`text-[#584bac] hover:text-[#ce1567] ${unreadCount > 0 ? 'bell-icon' : ''}`}
                   size={28}
-                  color="#584bac"
-                  _hover={{
-                    color: '#ce1567',
-                  }}
                 />
                 {unreadCount > 0 && (
-                  <Badge
-                    colorScheme="red"
-                    borderRadius="full"
-                    position="absolute"
-                    top="0"
-                    right="0"
-                    fontSize="0.8rem"
-                    p="0.2rem 0.4rem"
-                  >
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[1.5rem] text-center">
                     {unreadCount}
-                  </Badge>
+                  </span>
                 )}
-              </MenuButton>
-              <MenuList
-                border="2px solid #ce1584"
-                borderRadius="0.5rem"
-                p="1rem"
-              >
-                {userNotifications.length > 0 ? (
-                  <List spacing={3}>
+              </button>
+              
+              {}
+              {isNotificationMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white border-2 border-[#ce1584] rounded-lg p-4 shadow-lg z-20">
+                  {userNotifications.length > 0 ? (
+                    <div className="space-y-3">
                     {userNotifications.map((notification, index) => (
-                      <ListItem key={index}>
-                        <Flex align="center">
-                          <ListIcon as={BiBell} color="#ce1584" />
-                          {notification.message}
-                          <Button
-                            size="md"
-                            ml="auto"
-                            onClick={() => deleteNotification(notification._id)}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              padding: '4px 8px',
-                              borderRadius: 8,
-                              border: 'none',
-                              backgroundColor: 'transparent',
-                            }}
-                          >
-                            <IoIosClose color="red" />
-                          </Button>
-                        </Flex>
-                      </ListItem>
+                      <div key={index} className="flex items-center p-2 border-b border-gray-100 last:border-b-0">
+                        <BiBell className="text-[#ce1584] mr-2" size={16} />
+                        <span className="flex-1 text-sm">{notification.message}</span>
+                        <button
+                          onClick={() => deleteNotification(notification._id)}
+                          className="ml-auto p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                          <IoIosClose className="text-red-500" size={20} />
+                        </button>
+                      </div>
                     ))}
-                  </List>
-                ) : (
-                  <MenuItem>No notifications</MenuItem>
-                )}
-              </MenuList>
-            </Menu>
-            <Link to="/dashboard">
-              <Tag
-                size="lg"
-                cursor="pointer"
-                borderRadius="full"
-                py="0.4rem"
-                px="1rem"
-                _hover={{
-                  bg: '#dbdbdb',
-                }}
-                transition="0.2s"
-              >
-                <Flex align="center" my="0.025rem">
-                  <Avatar name={userName} size="sm" ml={-1} mr={2} />
-                  <TagLabel>
-                    <Text
-                      color="#584BAC"
-                      fontWeight="600"
-                      fontSize={['0.4rem', '0.5rem', '0.8rem', '1.2rem']}
-                      _hover={{
-                        bg: '#dbdbdb',
-                        color: '#ce1567',
-                      }}
-                    >
-                      Account
-                    </Text>
-                  </TagLabel>
-                </Flex>
-              </Tag>
+                    </div>
+                  ) : (
+                    <div className="text-gray-500 text-center py-4">No notifications</div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <Link to="/dashboard" className="flex items-center bg-gray-50 hover:bg-gray-200 rounded-full py-2 px-4 transition-colors duration-200 cursor-pointer">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-[#584BAC] text-white rounded-full flex items-center justify-center text-sm font-medium mr-2">
+                  {userName ? userName.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <span className="text-[#584BAC] font-semibold text-xs sm:text-sm lg:text-base xl:text-lg hover:text-[#ce1567]">
+                  Account
+                </span>
+              </div>
             </Link>
-            <Button
-              borderRadius="0.5rem"
-              fontSize="1.1rem"
-              px="2rem"
-              color="#584BAC"
-              _hover={{
-                bg: '#dbdbdb',
-                color: '#ce1567',
-              }}
+            
+            <button
+              className="bg-transparent text-[#584BAC] hover:bg-gray-200 hover:text-[#ce1567] rounded-lg px-8 py-2 transition-colors text-lg"
               onClick={logOut}
             >
               Log Out
-            </Button>
-          </Flex>
+            </button>
+          </div>
         ) : (
-          <Flex>
-            <Button
-              borderRadius="0.5rem"
-              fontSize="1.1rem"
-              px="2rem"
-              _hover={{
-                color: '#ce1567',
-              }}
+          <div className="flex">
+            <button
+              className="bg-transparent hover:text-[#ce1567] rounded-lg px-8 py-2 transition-colors text-lg"
               onClick={() => navigate('/login')}
             >
               Log In
-            </Button>
-            <Button
-              bg="#ce1567"
-              color="#ffffff"
-              fontSize="1.1rem"
-              px="2rem"
-              ml="1.5rem"
-              _hover={{ bg: '#bf0055' }}
+            </button>
+            <button
+              className="bg-[#ce1567] hover:bg-[#bf0055] text-white rounded-lg px-8 py-2 ml-6 transition-colors text-lg"
               onClick={() => navigate('/signup')}
             >
               Sign Up
-            </Button>
-          </Flex>
+            </button>
+          </div>
         )}
-      </Flex>
+      </div>
 
-      {/* For Phone Viewport */}
-      <Flex display={{ base: 'block', md: 'none' }}>
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            border="none"
-            icon={<GiHamburgerMenu size={30} color="#584bac" />}
-            variant="outline"
-            bg="transparent"
-          />
-          {isAuth ? (
-            <MenuList fontSize="1.1rem">
-              <Link to="/dashboard">
-                <MenuItem icon={<Avatar name={userName} size="sm" />}>
+      {}
+      <div className="block md:hidden">
+        <button
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Menu"
+        >
+          <GiHamburgerMenu size={30} className="text-[#584bac]" />
+        </button>
+        
+        {}
+        {isMobileMenuOpen && (
+          <div className="absolute right-4 top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+            {isAuth ? (
+              <div className="py-2">
+                <Link 
+                  to="/dashboard" 
+                  className="flex items-center px-4 py-3 hover:bg-gray-50 transition-colors text-lg"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="w-6 h-6 bg-[#584BAC] text-white rounded-full flex items-center justify-center text-sm font-medium mr-3">
+                    {userName ? userName.charAt(0).toUpperCase() : 'U'}
+                  </div>
                   Dashboard
-                </MenuItem>
-              </Link>
-              <MenuItem
-                icon={
-                  <Box position="relative">
-                    <BiBell
-                      className={unreadCount > 0 ? 'bell-icon' : ''}
-                      size={24}
-                      color="#584bac"
-                      _hover={{
-                        color: '#ce1567',
-                      }}
-                    />
+                </Link>
+                
+                <button
+                  className="flex items-center w-full px-4 py-3 hover:bg-gray-50 transition-colors text-lg text-left"
+                  onClick={() => {
+                    setIsNotificationDrawerOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <div className="relative mr-3">
+                    <BiBell size={24} className="text-[#584bac]" />
                     {unreadCount > 0 && (
-                      <Badge
-                        colorScheme="red"
-                        borderRadius="full"
-                        position="absolute"
-                        top="-1"
-                        right="-1"
-                      >
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1 min-w-[1rem] text-center">
                         {unreadCount}
-                      </Badge>
+                      </span>
                     )}
-                  </Box>
-                }
-                onClick={onOpen}
-              >
-                Notifications
-              </MenuItem>
-
-              <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-                <DrawerOverlay />
-                <DrawerContent>
-                  <DrawerCloseButton />
-                  <DrawerHeader>Notifications</DrawerHeader>
-
-                  <DrawerBody>
-                    {userNotifications.length > 0 ? (
-                      <List spacing={3}>
-                        {userNotifications.map((notification, index) => (
-                          <ListItem key={index}>
-                            <Flex align="center">
-                              <ListIcon as={BiBell} color="#ce1584" />
-                              {notification.message}
-                              <Button
-                                size="md"
-                                ml="auto"
-                                onClick={() =>
-                                  deleteNotification(notification._id)
-                                }
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  padding: '4px 8px',
-                                  borderRadius: 8,
-                                  border: 'none',
-                                  backgroundColor: 'transparent',
-                                }}
-                              >
-                                <IoIosClose color="red" />
-                              </Button>
-                            </Flex>
-                          </ListItem>
-                        ))}
-                      </List>
-                    ) : (
-                      <MenuItem>No notifications</MenuItem>
-                    )}
-                  </DrawerBody>
-                </DrawerContent>
-              </Drawer>
-
-              <MenuItem
-                icon={<BiLogOut size={24} color="#584bac" />}
-                onClick={() => logOut()}
-              >
-                Logout
-              </MenuItem>
-            </MenuList>
-          ) : (
-            <MenuList>
-              <MenuItem
-                icon={<BiUserCheck size={24} color="#584bac" />}
-                onClick={() => navigate('/login')}
-              >
-                Log In
-              </MenuItem>
-              <MenuItem
-                icon={<BiUserPlus size={24} color="#584bac" />}
-                onClick={() => navigate('/signup')}
-              >
-                Sign Up
-              </MenuItem>
-            </MenuList>
-          )}
-        </Menu>
-      </Flex>
-    </Flex>
+                  </div>
+                  Notifications
+                </button>
+                
+                <button
+                  className="flex items-center w-full px-4 py-3 hover:bg-gray-50 transition-colors text-lg text-left"
+                  onClick={() => {
+                    logOut();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <BiLogOut size={24} className="text-[#584bac] mr-3" />
+                  Logout
+                </button>
+              </div>
+        
+        {}
+        {isNotificationDrawerOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-30" onClick={() => setIsNotificationDrawerOpen(false)}>
+            <div className="fixed left-0 top-0 w-80 h-full bg-white shadow-lg z-40" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="text-lg font-semibold">Notifications</h3>
+                <button
+                  onClick={() => setIsNotificationDrawerOpen(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <IoIosClose size={24} />
+                </button>
+              </div>
+              <div className="p-4">
+                {userNotifications.length > 0 ? (
+                  <div className="space-y-3">
+                    {userNotifications.map((notification, index) => (
+                      <div key={index} className="flex items-center p-2 border-b border-gray-100 last:border-b-0">
+                        <BiBell className="text-[#ce1584] mr-2" size={16} />
+                        <span className="flex-1 text-sm">{notification.message}</span>
+                        <button
+                          onClick={() => deleteNotification(notification._id)}
+                          className="ml-auto p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                          <IoIosClose className="text-red-500" size={20} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-gray-500 text-center py-4">No notifications</div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+            ) : (
+              <div className="py-2">
+                <button
+                  className="flex items-center w-full px-4 py-3 hover:bg-gray-50 transition-colors text-lg text-left"
+                  onClick={() => {
+                    navigate('/login');
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <BiUserCheck size={24} className="text-[#584bac] mr-3" />
+                  Log In
+                </button>
+                <button
+                  className="flex items-center w-full px-4 py-3 hover:bg-gray-50 transition-colors text-lg text-left"
+                  onClick={() => {
+                    navigate('/signup');
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <BiUserPlus size={24} className="text-[#584bac] mr-3" />
+                  Sign Up
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </nav>
   );
 }
 

@@ -47,7 +47,7 @@ const userSchema = mongoose.Schema(
       minlength: [8, 'Password must be at least 8 characters long'],
       validate: {
         validator(value) {
-          // At least one uppercase letter, one lowercase letter, one digit, and one special character
+          
           return /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/g.test(value);
         },
         message:
@@ -69,7 +69,7 @@ const userSchema = mongoose.Schema(
   }
 );
 
-// eslint-disable-next-line func-names
+
 userSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

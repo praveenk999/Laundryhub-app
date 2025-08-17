@@ -1,5 +1,4 @@
-import { Center, Flex, Text } from '@chakra-ui/react';
-
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navbar from '../../components/Navbar';
 import OrderItemsAccordion from '../../components/OrderItemsAccordion';
@@ -13,22 +12,13 @@ function CheckoutPage() {
         <meta name="description" content="" />
       </Helmet>
       <Navbar />
-      <Center>
-        <Text mt="6rem" fontWeight={600} fontSize="2rem">
-          Schedule Your Order
-        </Text>
-      </Center>
-      <Flex
-        direction={{ base: 'column-reverse', xl: 'row' }}
-        justify="center"
-        align="center"
-        gap={{ base: '4rem', xl: '8rem' }}
-        mt={{ base: '2rem', md: '5rem' }}
-        pb={{ base: '4rem', xl: '0' }}
-      >
+      <div className="flex justify-center">
+        <h1 className="mt-24 font-semibold text-2xl">Schedule Your Order</h1>
+      </div>
+      <div className="flex flex-col-reverse xl:flex-row justify-center items-center gap-16 xl:gap-32 mt-8 md:mt-20 pb-16 xl:pb-0">
         <OrderItemsAccordion />
         <ScheduleCard />
-      </Flex>
+      </div>
     </>
   );
 }

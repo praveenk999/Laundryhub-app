@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// eslint-disable-next-line no-unused-vars
+
 const colors = require('colors');
 const Order = require('../models/orderModel');
 
@@ -26,7 +26,7 @@ const connect = async () => {
   }
 };
 
-// db optimization: delete orders that are paid, accepted, delivered and picked up every 2 days
+
 const deleteValidOrders = async () => {
   try {
     const timestamp = new Date().toISOString();
@@ -35,7 +35,7 @@ const deleteValidOrders = async () => {
     );
 
     const now = new Date();
-    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 days ago
+    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); 
 
     console.log(
       `📅 Deleting orders older than: ${twoDaysAgo.toISOString()}`.cyan

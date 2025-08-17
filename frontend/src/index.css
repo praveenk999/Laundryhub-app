@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
    @keyframes skew-y-shaking{
     0% { transform: skewY(-20deg); }
     5% { transform: skewY(20deg); }

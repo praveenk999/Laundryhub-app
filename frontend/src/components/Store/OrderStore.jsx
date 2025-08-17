@@ -17,7 +17,6 @@ const useOrderStore = create(
         launderer: '',
       },
 
-      // Action to add or update items, and if the item already exists, update the quantity
       updateItems: (newItems) => {
         set((state) => {
           const updatedItems = [...state.order.items];
@@ -34,7 +33,6 @@ const useOrderStore = create(
               updatedItems.push(newItem);
             }
           });
-          // Calculate the order total
           const updatedOrderTotal = updatedItems.reduce(
             (acc, item) => acc + item.quantity * item.pricePerItem,
             0
@@ -61,7 +59,6 @@ const useOrderStore = create(
         });
       },
 
-      // Action to update PickupDate and DeliveryDate
       setPickupDate: (value) => {
         set((state) => {
           let newPickupDate;
@@ -93,7 +90,6 @@ const useOrderStore = create(
           };
         });
       },
-      // Action to update PickupTime
       setPickupTime: (value) => {
         set((state) => {
           return {
@@ -106,7 +102,6 @@ const useOrderStore = create(
         });
       },
 
-      // Action to update DeliveryTime
       setDeliveryTime: (value) => {
         set((state) => {
           return {
@@ -119,7 +114,6 @@ const useOrderStore = create(
         });
       },
 
-      // Action to update PickupAddress
       setPickupAddress: (value) => {
         set((state) => {
           return {
@@ -132,7 +126,6 @@ const useOrderStore = create(
         });
       },
 
-      // Action to update DeliveryAddress
       setDeliveryAddress: (value) => {
         set((state) => {
           return {
@@ -145,7 +138,6 @@ const useOrderStore = create(
         });
       },
 
-      // Action to update Launderer
       setLaunderer: (value) => {
         set((state) => {
           return {

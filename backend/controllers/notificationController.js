@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const Notification = require('../models/notificationModel');
 const Order = require('../models/orderModel');
-// @desc    Get all notifications
-// @route   GET /notifications
-// @access  Private
+
+
+
 const getNotifications = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
@@ -32,26 +32,26 @@ const getNotifications = async (req, resp) => {
   }
 };
 
-// @desc    create a notification
-// @route   POST /notifications
-// @access  Private
+
+
+
 const createNotification = async (req, resp) => {
   try {
     const { student, launderer, message, orderId } = req.body;
     const token = req.cookies.jwt;
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     let studentName = '';
-    // if the notification is sent by launderer.
+    
     if (student === '') {
       const order = await Order.findById(orderId).populate('user', 'username');
       studentName += order.user.username;
     }
     const notification = new Notification({
-      user: decodedToken.user_id, // can be launderer or student who is sending the notification to the opposite role.
+      user: decodedToken.user_id, 
       student: decodedToken.role === 'student' ? '' : studentName,
       launderer: decodedToken.role === 'launderer' ? '' : launderer,
       message: message,
-      read: false, // unread by default.
+      read: false, 
     });
     await notification.save();
     resp.status(201).json({
@@ -65,9 +65,9 @@ const createNotification = async (req, resp) => {
   }
 };
 
-// @desc  delete a notification
-// @route DELETE /notifications/:id
-// @access Private
+
+
+
 const deleteNotification = async (req, resp) => {
   try {
     const notification = await Notification.findByIdAndDelete(req.params.id);

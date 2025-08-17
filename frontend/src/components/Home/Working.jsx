@@ -1,53 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Box, Image, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-
-const CardWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-`;
-const Card = styled(motion.div)`
-    width:15rem;
-    height:15rem;
-    min-width:{{base:'auto', md:'15rem'}};
-    min-height:{{base:'auto', md:'15rem'}};
-    display:flex;
-    flex-direction:column;
-    border-radius:1.5rem;
-    background-color: #fff7;
-    margin:1rem;
-    position:relative;
-    cursor:grab;
-    padding:1rem;
-    justify-content:center;
-    align-items:center;
-`;
-const CircleWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  min-height: 100%;
-  overflow: hidden;
-  border-top-right-radius: 1.5rem;
-  border-top-left-radius: 1.5rem;
-  border-bottom-right-radius: 1.5rem;
-  border-bottom-left-radius: 1.5rem;
-  background-color: #fff2;
-`;
-const Circle = styled.div`
-  position: relative;
-  width: 85%;
-  height: 13rem;
-  background-color: #fff2;
-  border-radius: 50%;
-  margin: auto;
-  margin-top: 2rem;
-`;
 
 const cardVariant = {
   initial: { y: 20, opacity: 0 },
@@ -57,49 +10,35 @@ const cardVariant = {
 
 function Working(props) {
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      px="0rem"
-      py="0rem"
-      margin="auto"
-      alignItems="center"
-      justifyContent="center"
-      pb="3rem"
-    >
-      <CardWrapper>
+    <div className="flex flex-col px-0 py-0 mx-auto items-center justify-center pb-12">
+      <div className="flex justify-center items-center w-full">
         <motion.div variants={cardVariant} animate="animate" initial="initial">
-          <Card className="box">
-            <CircleWrapper>
-              <Circle>
-                <Image
+          <div className="w-60 h-60 min-w-60 min-h-60 flex flex-col rounded-3xl bg-white/50 m-4 relative cursor-grab p-4 justify-center items-center">
+            <div className="absolute top-0 left-0 min-w-full min-h-full overflow-hidden rounded-3xl bg-white/20">
+              <div className="relative w-[85%] h-52 bg-white/20 rounded-full mx-auto mt-8">
+                <img
                   src={`assets/${props.procedure.image}`}
-                  margin="auto"
-                  w="100%"
-                  pt="0.5rem"
+                  alt={props.procedure.title}
+                  className="w-full pt-2 mx-auto"
                 />
-              </Circle>
-            </CircleWrapper>
-          </Card>
+              </div>
+            </div>
+          </div>
         </motion.div>
-      </CardWrapper>
+      </div>
+      
       <motion.div variants={cardVariant} animate="animate" initial="initial">
-        <Text fontWeight="semibold" fontSize="1.5rem" mt="-0.5rem" mb="1rem">
+        <h3 className="font-semibold text-2xl -mt-2 mb-4">
           {props.procedure.title}
-        </Text>
+        </h3>
       </motion.div>
+      
       <motion.div variants={cardVariant} animate="animate" initial="initial">
-        <Text
-          color="#00000099"
-          maxWidth="15rem"
-          maxHeight="2rem"
-          textAlign="center"
-          fontWeight="semibold"
-        >
+        <p className="text-black/60 max-w-60 max-h-8 text-center font-semibold">
           {props.procedure.desc}
-        </Text>
+        </p>
       </motion.div>
-    </Box>
+    </div>
   );
 }
 

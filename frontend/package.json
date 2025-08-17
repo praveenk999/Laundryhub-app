@@ -15,11 +15,8 @@
     "node": "true"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.7.1",
     "@dotlottie/react-player": "^1.6.19",
     "@emailjs/browser": "^4.3.3",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@react-spring/parallax": "^9.7.3",
     "@react-spring/web": "^9.7.3",
     "axios": "^1.6.8",
@@ -41,6 +38,7 @@
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@vitejs/plugin-react": "^4.0.1",
+    "autoprefixer": "^10.4.21",
     "eslint": "^8.45.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.8.0",
@@ -53,8 +51,10 @@
     "eslint-plugin-react-refresh": "^0.4.1",
     "husky": "^9.0.11",
     "lint-staged": "^13.2.3",
+    "postcss": "^8.5.6",
     "prettier": "^3.0.0",
     "stylelint": "^15.10.2",
+    "tailwindcss": "^4.1.11",
     "vite": "^4.4.0"
   },
   "lint-staged": {

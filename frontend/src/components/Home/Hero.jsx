@@ -1,43 +1,14 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Image,
-  Text,
-  chakra,
-  useToast,
-} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Landing from '../../../public/assets/laundry_hero.png';
 import useAuthStore from '../Store/AuthStore';
+import { toast } from '../../utils/toast';
 
-const LandingButton = chakra('button', {
-  baseStyle: {
-    px: '6',
-    mt: '2',
-    py: '3',
-    bg: '#584BAC', // Adjust background color for dimmer effect
-    fontSize: '1.2rem',
-    fontWeight: '600',
-    color: 'white',
-    borderRadius: 'lg ',
-    _hover: {
-      bg: '#4c4196',
-    },
-    _active: {
-      bg: '#3f3680',
-      transform: 'scale(0.98)',
-    },
-  },
-});
-
-const AnimatedBox = motion.div;
+const AnimatedDiv = motion.div;
 
 function Hero() {
   const navigate = useNavigate();
-  const toast = useToast();
   const { isAuth, userRole } = useAuthStore((state) => ({
     isAuth: state.isAuth,
     userRole: state.userRole,
@@ -50,59 +21,36 @@ function Hero() {
   };
 
   return (
-    <Flex
-      w={{ base: '100%', xl: '' }}
-      h={{ base: '100%', xl: '' }}
-      bgImage={{ base: "url('public/assets/laundry_hero.png')", xl: '' }}
-      bgPosition=""
-      bgRepeat="no-repeat"
-      alignItems="center"
-      justifyContent="center"
-      gap={{ base: '2.1rem', xl: '2rem', '2xl': '8rem' }}
-      direction={{ base: 'column', lg: 'row' }}
-      px="1rem"
-      mx="1rem"
+    <div
+      className="w-full h-full flex items-center justify-center gap-8 xl:gap-8 2xl:gap-32 flex-col lg:flex-row px-4 mx-4"
+      style={{
+        backgroundImage: "url('public/assets/laundry_hero.png')",
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
-      <AnimatedBox
+      <AnimatedDiv
         variants={contentVariant}
         animate="animate"
         initial="initial"
       >
-        <Box
-          maxW="32rem"
-          minW={{ base: 'auto', md: '29rem' }}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          order={{ base: '1', md: '0' }}
-        >
-          <Heading
-            color="lxPurple"
-            mb="2rem"
-            textAlign="center"
-            fontSize={{ base: '2.1rem', sm: '2.5rem', '2xl': '3.2rem' }}
-          >
+        <div className="max-w-[32rem] min-w-auto md:min-w-[29rem] flex flex-col items-center justify-center order-1 md:order-0">
+          <h1 className="text-lx-purple mb-8 text-center text-[2.1rem] sm:text-[2.5rem] 2xl:text-[3.2rem] font-bold leading-tight">
             Laundry and Dry Cleaning, Done.
-          </Heading>
-          <Text
-            fontWeight={600}
-            fontSize={{ base: '1rem', sm: '1.2rem', '2xl': '1.3rem' }}
-            textAlign="center"
-            w={{ base: '20rem', sm: '25rem', md: '28rem', '2xl': '35rem' }}
-            mb="2rem"
-          >
+          </h1>
+          <p className="font-semibold text-base sm:text-xl 2xl:text-[1.3rem] text-center w-80 sm:w-[25rem] md:w-[28rem] 2xl:w-[35rem] mb-8">
             LaundryHub picks up, cleans and delivers. Amazingly awesome,
             ridiculously simple.
-          </Text>
+          </p>
 
           {userRole === 'student' ? (
-            <LandingButton
+            <button
+              className="px-6 mt-2 py-3 bg-lx-purple text-xl font-semibold text-white rounded-lg hover:bg-[#4c4196] active:bg-[#3f3680] active:scale-[0.98] transition-all"
               onClick={() => {
                 if (isAuth) {
                   navigate('/OrderList');
                 } else {
-                  toast({
+                  toast.show({
                     title: 'Please login to place an order',
                     status: 'error',
                     duration: 3000,
@@ -114,14 +62,15 @@ function Hero() {
               }}
             >
               Place Order
-            </LandingButton>
+            </button>
           ) : (
-            <LandingButton
+            <button
+              className="px-6 mt-2 py-3 bg-lx-purple text-xl font-semibold text-white rounded-lg hover:bg-[#4c4196] active:bg-[#3f3680] active:scale-[0.98] transition-all w-auto"
               onClick={() => {
                 if (isAuth) {
                   navigate('/dashboard');
                 } else {
-                  toast({
+                  toast.show({
                     title: 'Login required',
                     status: 'error',
                     duration: 3000,
@@ -131,29 +80,20 @@ function Hero() {
                   navigate('/login');
                 }
               }}
-              w="auto"
             >
               Go to Dashboard
-            </LandingButton>
+            </button>
           )}
-        </Box>
-      </AnimatedBox>
-      <Box>
-        <Image
+        </div>
+      </AnimatedDiv>
+      <div>
+        <img
           src={Landing}
-          height={{
-            base: '0',
-            xl: '530px',
-            '2xl': '600px',
-          }}
-          width={{
-            base: '0',
-            xl: '700px',
-            '2xl': '850px',
-          }}
+          alt="Laundry Hero"
+          className="h-0 xl:h-[530px] 2xl:h-[600px] w-0 xl:w-[700px] 2xl:w-[850px]"
         />
-      </Box>
-    </Flex>
+      </div>
+    </div>
   );
 }
 

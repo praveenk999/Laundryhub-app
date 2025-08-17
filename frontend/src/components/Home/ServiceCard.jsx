@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Text } from '@chakra-ui/react';
 import Services from '../../TempData/Services';
 import Service from './Service';
 
@@ -17,43 +16,26 @@ function ServiceCard() {
 
   return (
     <>
-      <Box
-        pt={{ base: '8rem', md: '2rem' }}
-        pb={{ base: '2rem', md: '4rem' }}
-        mx="1rem"
-      >
-        <Box pt="6rem">
+      <div className="pt-32 md:pt-8 pb-8 md:pb-16 mx-4">
+        <div className="pt-24">
           <motion.div
             variants={cardVariant}
             animate="animate"
             initial="initial"
           >
-            <Text fontSize="4xl" textAlign="center" fontWeight="semibold">
+            <h2 className="text-4xl text-center font-semibold">
               What We Offer
-            </Text>
-            <Text
-              textAlign="center"
-              fontWeight="semibold"
-              fontSize="xl"
-              color="lxPurple"
-            >
+            </h2>
+            <p className="text-center font-semibold text-xl text-lx-purple">
               Our services and prices
-            </Text>
+            </p>
           </motion.div>
-        </Box>
-      </Box>
+        </div>
+      </div>
       <motion.div variants={cardVariant} animate="animate" initial="initial">
-        <Box
-          display="flex"
-          flexDirection={{ base: 'column', lg: 'row' }}
-          alignItems="center"
-          gap="3.5rem"
-          justifyContent="center"
-          px={{ base: '0rem', md: '9rem' }}
-          my={{ base: '1rem', md: '0rem' }}
-        >
+        <div className="flex flex-col lg:flex-row items-center gap-14 justify-center px-0 md:px-36 my-4 md:my-0">
           {tasks}
-        </Box>
+        </div>
       </motion.div>
     </>
   );

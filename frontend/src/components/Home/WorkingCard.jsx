@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Text } from '@chakra-ui/react';
 import Workings from '../../TempData/Workings';
 import Working from './Working';
 
@@ -16,39 +15,25 @@ function WorkingCard() {
   });
 
   return (
-    <Box>
-      <Box pt={{ base: '8rem', md: '6rem' }} pb={{ base: '2rem', md: '4rem' }}>
+    <div>
+      <div className="pt-32 md:pt-24 pb-8 md:pb-16">
         <motion.div variants={cardVariant} animate="animate" initial="initial">
-          <Box pt="6rem" mx="1rem">
-            <Text fontSize="4xl" textAlign="center" fontWeight="semibold">
+          <div className="pt-24 mx-4">
+            <h2 className="text-4xl text-center font-semibold">
               How It Works
-            </Text>
-            <Text
-              textAlign="center"
-              fontWeight="semibold"
-              fontSize="xl"
-              color="lxPurple"
-            >
+            </h2>
+            <p className="text-center font-semibold text-xl text-[#584BAC]">
               We collect, clean and deliver you laundry and dry cleaning in 48
               hours
-            </Text>
-          </Box>
+            </p>
+          </div>
         </motion.div>
-      </Box>
+      </div>
 
-      <Box
-        display="flex"
-        flexDirection={{ base: 'column', lg: 'row' }}
-        alignItems="center"
-        justifyContent="center"
-        gap="3.5rem"
-        px={{ base: '0rem', md: '1rem' }}
-        my="1rem"
-        pb="8rem"
-      >
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-14 px-0 md:px-4 my-4 pb-32">
         {procedures}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

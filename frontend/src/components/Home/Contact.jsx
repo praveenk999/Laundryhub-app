@@ -1,15 +1,3 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Stack,
-  Text,
-  Textarea,
-  useToast,
-} from '@chakra-ui/react';
 import { DotLottiePlayer } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
 import emailjs from '@emailjs/browser';
@@ -17,21 +5,20 @@ import React, { useRef, useState } from 'react';
 import { HiArrowLongRight } from 'react-icons/hi2';
 
 function ContactSection() {
-  // eslint-disable-next-line no-unused-vars
   const [errors, setErrors] = useState({});
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  
   const senderNameRef = useRef();
   const senderMailRef = useRef();
   const messageRef = useRef();
-  const toast = useToast();
 
-  const handleToast = (title, description, status) => {
-    toast({
-      position: 'top',
-      title,
-      description,
-      status,
-      isClosable: true,
-    });
+  const showToastMessage = (title, description, type) => {
+    setToastMessage(`${title}: ${description}`);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 4000);
   };
 
   const handleClick = () => {
@@ -66,123 +53,98 @@ function ContactSection() {
       emailjs
         .send(serviceId, templateId, templateParams, publicKey)
         .then(() => {
-          handleToast('Your email has been sent successfully.', '', 'success');
+          showToastMessage('Your email has been sent successfully.', '', 'success');
         })
         .catch((error) => {
-          handleToast('Error sending mail!', error, 'error');
+          showToastMessage('Error sending mail!', error, 'error');
         });
     } else {
       const errorMessages = Object.values(newErrors).join(', ');
-      handleToast('Cannot send mail!', errorMessages, 'error');
+      showToastMessage('Cannot send mail!', errorMessages, 'error');
     }
   };
 
   return (
-    <Flex align="center" gap={{ base: '2rem', '2xl': '3rem' }}>
-      <Stack align="center">
-        <Stack align="center" gap="1rem" mb="3rem">
-          <Text
-            color="#584BAC"
-            fontWeight={600}
-            fontSize={{ base: '2.1rem', sm: '2.5rem', '2xl': '3rem' }}
-          >
+    <div className="flex items-center gap-8 2xl:gap-12">
+      {}
+      {showToast && (
+        <div
+          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white transform transition-all duration-300 ${
+            toastType === 'success'
+              ? 'bg-green-500'
+              : toastType === 'error'
+                ? 'bg-red-500'
+                : 'bg-blue-500'
+          }`}
+        >
+          {toastMessage}
+        </div>
+      )}
+      
+      <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-4 mb-12">
+          <h2 className="text-[#584BAC] font-semibold text-4xl sm:text-5xl 2xl:text-6xl">
             Reach Out to Us
-          </Text>
-          <Text
-            fontWeight={600}
-            fontSize={{ base: '1rem', sm: '1.2rem', '2xl': '1.3rem' }}
-            textAlign="center"
-            w={{ base: '20rem', sm: '30rem', md: '35rem', '2xl': '40rem' }}
-          >
+          </h2>
+          <p className="font-semibold text-lg sm:text-xl 2xl:text-2xl text-center max-w-xs sm:max-w-lg md:max-w-2xl 2xl:max-w-3xl">
             Whether you have inquiries, feedback, or need support, we're just a
             message away.
-          </Text>
-        </Stack>
-        <Stack gap="2rem">
-          <Flex
-            gap={{ base: '2rem', md: '3rem' }}
-            flexDirection={{ base: 'column', md: 'row' }}
-            align={{ base: 'center', md: '' }}
-          >
-            <Box>
-              <FormControl>
-                <FormLabel fontSize="1.2rem">Name</FormLabel>
-                <Input
-                  type="text"
-                  ref={senderNameRef}
-                  placeholder="Enter your name"
-                  pl={0}
-                  w={{
-                    base: '20rem',
-                    sm: '25rem',
-                    md: '16rem',
-                    '2xl': '18rem',
-                  }}
-                  border="none"
-                  borderBottom="2px solid #584BAC"
-                  borderRadius={0}
-                  _hover={{ borderBottom: '2px solid #584BAC' }}
-                  _focusVisible={{ outline: 'none' }}
-                />
-              </FormControl>
-            </Box>
-            <Box>
-              <FormControl>
-                <FormLabel fontSize="1.2rem">Email</FormLabel>
-                <Input
-                  type="email"
-                  ref={senderMailRef}
-                  placeholder="Enter your email"
-                  pl={0}
-                  w={{
-                    base: '20rem',
-                    sm: '25rem',
-                    md: '16rem',
-                    '2xl': '18rem',
-                  }}
-                  border="none"
-                  borderBottom="2px solid #584BAC"
-                  borderRadius={0}
-                  _hover={{ borderBottom: '2px solid #584BAC' }}
-                  _focusVisible={{ outline: 'none' }}
-                />
-              </FormControl>
-            </Box>
-          </Flex>
-          <Box>
-            <FormControl>
-              <FormLabel fontSize="1.2rem">Message</FormLabel>
-              <Textarea
-                w={{ base: '20rem', sm: '25rem', md: '35rem', '2xl': '39rem' }}
-                ref={messageRef}
-                placeholder="Enter the message"
-                pl={0}
-                border="none"
-                borderBottom="2px solid #584BAC"
-                borderRadius={0}
-                _hover={{ borderBottom: '2px solid #584BAC' }}
-                _focusVisible={{ outline: 'none' }}
+          </p>
+        </div>
+        
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center md:items-start">
+            <div>
+              <label htmlFor="name" className="block text-xl font-medium mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                ref={senderNameRef}
+                placeholder="Enter your name"
+                className="w-80 sm:w-96 md:w-64 2xl:w-72 px-0 py-2 border-0 border-b-2 border-[#584BAC] bg-transparent focus:outline-none focus:border-[#584BAC] hover:border-[#584BAC]"
               />
-            </FormControl>
-          </Box>
-        </Stack>
-        <Button
-          color="#FFFFFF"
-          fontSize="1.2rem"
-          bg="#584BAC"
-          size="lg"
-          mt="2rem"
-          rightIcon={<HiArrowLongRight color="#ffffff" size={30} />}
-          _hover={{ bg: '#4c4196' }}
+            </div>
+            
+            <div>
+              <label htmlFor="email" className="block text-xl font-medium mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                ref={senderMailRef}
+                placeholder="Enter your email"
+                className="w-80 sm:w-96 md:w-64 2xl:w-72 px-0 py-2 border-0 border-b-2 border-[#584BAC] bg-transparent focus:outline-none focus:border-[#584BAC] hover:border-[#584BAC]"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label htmlFor="message" className="block text-xl font-medium mb-2">
+              Message
+            </label>
+            <textarea
+              id="message"
+              ref={messageRef}
+              placeholder="Enter the message"
+              rows={4}
+              className="w-80 sm:w-96 md:w-full 2xl:w-full px-0 py-2 border-0 border-b-2 border-[#584BAC] bg-transparent resize-none focus:outline-none focus:border-[#584BAC] hover:border-[#584BAC]"
+            />
+          </div>
+        </div>
+        
+        <button
           onClick={handleClick}
+          className="flex items-center gap-3 mt-8 px-8 py-4 bg-[#584BAC] text-white text-xl font-medium rounded-lg hover:bg-[#4c4196] transition-colors duration-300"
         >
           Send Mail
-        </Button>
-      </Stack>
-      <Box
-        display={{ base: 'none', xl: 'block' }}
-        boxSize={{ base: 0, xl: '35rem', '2xl': '45rem' }}
-      >
+          <HiArrowLongRight size={30} />
+        </button>
+      </div>
+      
+      <div className="hidden xl:block w-96 h-96 2xl:w-[45rem] 2xl:h-[45rem]">
         <DotLottiePlayer
           src="/Contact.lottie"
           autoplay
@@ -190,8 +152,8 @@ function ContactSection() {
           playMode="bounce"
           speed={0.75}
         />
-      </Box>
-    </Flex>
+      </div>
+    </div>
   );
 }
 

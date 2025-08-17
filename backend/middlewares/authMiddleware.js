@@ -7,7 +7,7 @@ const verifyUser = (req, resp, next) => {
       jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
-        // eslint-disable-next-line no-unused-vars
+        
         async (err, decodedToken) => {
           if (err) {
             console.error(err);
@@ -18,7 +18,7 @@ const verifyUser = (req, resp, next) => {
         }
       );
     } else {
-      resp.status(401).json({ message: 'Unauthorized' }); // Return an unauthorized response
+      resp.status(401).json({ message: 'Unauthorized' }); 
     }
   } catch (err) {
     console.error(err);

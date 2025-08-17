@@ -1,33 +1,28 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Button,
-  HStack,
-  Stack,
-  Text,
-  useToast,
-} from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { LuIndianRupee } from 'react-icons/lu';
+import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
 import useOrderStore from '../Store/OrderStore';
 
 function OrderItemsAccordion() {
   const { order, clearItems } = useOrderStore();
-  const toast = useToast();
+  const [expandedItems, setExpandedItems] = useState({});
+
+  const showToast = (message) => {
+    alert(message); 
+  };
 
   const handleClear = () => {
     clearItems();
-    toast({
-      position: 'top',
-      title: 'Items have been removed from the order.',
-      description: '',
-      status: 'info',
-      duration: 2000,
-      isClosable: true,
-    });
+    showToast('Items have been removed from the order.');
   };
+
+  const toggleAccordion = (washType) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [washType]: !prev[washType],
+    }));
+  };
+
   const segregateItemsByWashType = () => {
     return order.items.reduce((acc, item) => {
       if (!acc[item.washType]) {
@@ -40,30 +35,19 @@ function OrderItemsAccordion() {
   const segregateItems = segregateItemsByWashType();
 
   return (
-    <Stack align="center" gap={6}>
-      <Text fontWeight={600} fontSize="1.5rem">
+    <div className="flex flex-col items-center gap-6">
+      <h2 className="font-semibold text-2xl">
         Items Added
-      </Text>
-      <Stack
-        px={{ base: '1rem', lg: '2rem' }}
-        py="1rem"
-        borderRadius="1rem"
-        w={{ base: '22rem', lg: '25rem' }}
-        border="2px solid gray"
-        boxShadow="0px 0px 20px 0px rgba(0, 0, 0, 0.20)"
-      >
-        <Accordion allowToggle>
+      </h2>
+      <div className="px-4 lg:px-8 py-4 rounded-2xl w-80 lg:w-96 border-2 border-gray-400 shadow-lg">
+        <div className="space-y-5">
           {Object.keys(segregateItems).map((washType) => (
-            <AccordionItem key={washType} border="none" my={5}>
-              <AccordionButton
-                justifyContent="space-between"
-                color="#584BAC"
-                fontSize="1.2rem"
-                fontWeight={600}
-                borderRadius={25}
-                p={0}
-                px={3}
-                _expanded={{ bg: '#E6E6E6' }}
+            <div key={washType} className="border-none my-5">
+              <button
+                onClick={() => toggleAccordion(washType)}
+                className={`w-full flex justify-between items-center text-[#584BAC] text-lg font-semibold rounded-3xl px-3 py-2 transition-colors ${
+                  expandedItems[washType] ? 'bg-gray-200' : 'hover:bg-gray-100'
+                }`}
               >
                 <span>
                   {washType
@@ -75,46 +59,50 @@ function OrderItemsAccordion() {
                     )
                     .join(' ')}
                 </span>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel>
-                {segregateItems[washType].map((item, index) => (
-                  <HStack key={index} mb={1} justify="space-between">
-                    <Text>
-                      <span style={{ fontWeight: '600' }}>
-                        {item.quantity}x
-                      </span>{' '}
-                      {item.name}
-                    </Text>
-                    <HStack gap={0}>
-                      <LuIndianRupee color="#CE1567" />
-                      <Text color="#CE1567" fontWeight={600}>
-                        {item.quantity * item.pricePerItem}
-                      </Text>
-                    </HStack>
-                  </HStack>
-                ))}
-              </AccordionPanel>
-            </AccordionItem>
+                {expandedItems[washType] ? (
+                  <IoChevronUp className="w-5 h-5" />
+                ) : (
+                  <IoChevronDown className="w-5 h-5" />
+                )}
+              </button>
+              {expandedItems[washType] && (
+                <div className="mt-2 px-3">
+                  {segregateItems[washType].map((item, index) => (
+                    <div key={index} className="flex justify-between items-center mb-1">
+                      <span>
+                        <span className="font-semibold">
+                          {item.quantity}x
+                        </span>{' '}
+                        {item.name}
+                      </span>
+                      <div className="flex items-center gap-0">
+                        <LuIndianRupee className="text-[#CE1567]" />
+                        <span className="text-[#CE1567] font-semibold">
+                          {item.quantity * item.pricePerItem}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
-        </Accordion>
-        <HStack justify="space-between" fontWeight={600} fontSize="1.2rem">
-          <Text>Total:</Text>
-          <HStack gap={0}>
-            <LuIndianRupee color="#CE1567" />
-            <Text color="#CE1567">{order.orderTotal}</Text>
-          </HStack>
-        </HStack>
-      </Stack>
-      <Button
-        color="#FFFFFF"
-        bg="#CE1567"
-        _hover={{ bg: '#bf0055' }}
+        </div>
+        <div className="flex justify-between items-center font-semibold text-lg mt-4">
+          <span>Total:</span>
+          <div className="flex items-center gap-0">
+            <LuIndianRupee className="text-[#CE1567]" />
+            <span className="text-[#CE1567]">{order.orderTotal}</span>
+          </div>
+        </div>
+      </div>
+      <button
+        className="text-white bg-[#CE1567] hover:bg-[#bf0055] px-6 py-2 rounded transition-colors"
         onClick={handleClear}
       >
         Clear Items
-      </Button>
-    </Stack>
+      </button>
+    </div>
   );
 }
 

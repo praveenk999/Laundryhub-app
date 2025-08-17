@@ -4,16 +4,16 @@ import { persist } from 'zustand/middleware';
 const useAuthStore = create(
   persist(
     (set) => ({
-      isAuth: false, // userCredentials
-      Phone: 0, // userCredentials
-      userName: '', // userCredentials
-      userEmail: '', // userCredentials
-      userRole: '', // userCredentials
-      userHostel: '', // userCredentials
-      userRoomNumber: '', // userCredentials
-      userRollNumber: '', // userCredentials
-      userNotifications: [], // userCredentials
-      unreadCount: 0, // userCredentials
+      isAuth: false, 
+      Phone: 0, 
+      userName: '', 
+      userEmail: '', 
+      userRole: '', 
+      userHostel: '', 
+      userRoomNumber: '', 
+      userRollNumber: '', 
+      userNotifications: [], 
+      unreadCount: 0, 
       addAuth: () => {
         set((state) => {
           return { ...state, isAuth: true };

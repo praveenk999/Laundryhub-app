@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
-// @desc    Get all orders of a student
-// @route   GET /student/orders
-// @access  Private
+
+
+
 const getStudentOrders = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    const studentId = decodedToken.user_id; // avoiding database call by storing the user_id in the token
+    const studentId = decodedToken.user_id; 
     const result = await Order.find({
       user: studentId,
     });
@@ -23,14 +23,14 @@ const getStudentOrders = async (req, resp) => {
   }
 };
 
-// @desc    Create a new order
-// @route   POST /student/createorder
-// @access  Private
+
+
+
 const createStudentOrder = async (req, resp) => {
   try {
     const token = req.cookies.jwt;
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    const studentId = decodedToken.user_id; // avoiding database call by storing the user_id in the token
+    const studentId = decodedToken.user_id; 
     if (decodedToken.role !== 'student') {
       return resp.status(401).json({
         message: 'User does not have access rights',
@@ -47,7 +47,7 @@ const createStudentOrder = async (req, resp) => {
       pickupTime,
       launderer,
     } = req.body;
-    // all the items validation is done in the frontend without any anomaly.
+    
     const result = await User.find({
       username: launderer,
     });
@@ -81,9 +81,9 @@ const createStudentOrder = async (req, resp) => {
   }
 };
 
-// @desc    Update the pickup status of an order
-// @route   PUT /student/updatepickupstatus/:order_id
-// @access  Private
+
+
+
 const updatePickupStatus = async (req, resp) => {
   try {
     const orderId = req.params.order_id;
@@ -118,9 +118,9 @@ const updatePickupStatus = async (req, resp) => {
   }
 };
 
-// @desc    Delete an order
-// @route   DELETE /student/deleteorder/:order_id
-// @access  Private
+
+
+
 const deleteOrder = async (req, resp) => {
   try {
     const orderId = req.params.order_id;
@@ -145,9 +145,9 @@ const deleteOrder = async (req, resp) => {
   }
 };
 
-// @desc    Update the delivery status of an order
-// @route   PUT /student/updatedeliverystatus/:order_id
-// @access  Private
+
+
+
 const updateDeliveryStatus = async (req, resp) => {
   try {
     const orderId = req.params.order_id;
@@ -182,9 +182,9 @@ const updateDeliveryStatus = async (req, resp) => {
   }
 };
 
-// @desc    Get the launderers
-// @route   GET /student/launderers
-// @access  Private
+
+
+
 const getAllLaunderers = async (req, resp) => {
   try {
     const launderers = await User.find({ role: 'launderer' });

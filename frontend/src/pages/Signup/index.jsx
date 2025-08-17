@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import React from 'react';
 import { DotLottiePlayer } from '@dotlottie/react-player';
 import '@dotlottie/react-player/dist/index.css';
 
@@ -14,18 +14,8 @@ export default function Signup() {
         <meta name="description" content="" />
       </Helmet>
       <Navbar />
-      <Flex
-        justify="center"
-        align="center"
-        gap={{ base: '0', xl: '4rem', '2xl': '8rem' }}
-        h="100vh"
-        px={{ base: '0', xl: '2rem', '2xl': '0' }}
-      >
-        <Box
-          display={{ base: 'none', xl: 'block' }}
-          h={{ base: '0', xl: '45rem', '2xl': '50rem' }}
-          w={{ base: '0', xl: '45rem', '2xl': '50rem' }}
-        >
+      <div className="flex justify-center items-center gap-0 xl:gap-16 2xl:gap-32 h-screen px-0 xl:px-8 2xl:px-0">
+        <div className="hidden xl:block h-0 xl:h-[45rem] 2xl:h-[50rem] w-0 xl:w-[45rem] 2xl:w-[50rem]">
           <DotLottiePlayer
             src="/Launderer.lottie"
             autoplay
@@ -33,9 +23,9 @@ export default function Signup() {
             playMode="bounce"
             speed={0.75}
           />
-        </Box>
+        </div>
         <SignupForm />
-      </Flex>
+      </div>
     </>
   );
 }

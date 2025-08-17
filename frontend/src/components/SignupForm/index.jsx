@@ -1,16 +1,3 @@
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Select,
-  Stack,
-  Text,
-  useToast,
-} from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { HiArrowLongRight } from 'react-icons/hi2';
@@ -38,18 +25,15 @@ export default function SignupForm() {
     }));
 
   const navigate = useNavigate();
-  const toast = useToast();
+  
+  const showToast = (title, description, type = 'info') => {
+    alert(`${title}: ${description}`); 
+  };
+  
   const handleToast = (title, description, status) => {
-    toast({
-      position: 'top',
-      title,
-      description,
-      status,
-      isClosable: true,
-    });
+    showToast(title, description, status);
   };
   useEffect(() => {
-    // eslint-disable-next-line
     if (loading) {
     }
   }, [loading]);
@@ -87,7 +71,6 @@ export default function SignupForm() {
     }
     setLoading(true);
     try {
-      // eslint-disable-next-line
       const response = await signup(credentials);
 
       addAuth();
@@ -121,190 +104,173 @@ export default function SignupForm() {
   };
 
   return (
-    <Stack align="center">
-      <Text textAlign="center" fontSize={['1.7rem', '2.2rem']} fontWeight="600">
+    <div className="flex flex-col items-center">
+      <h1 className="text-center text-3xl lg:text-4xl font-semibold mb-6">
         Register With Us
-      </Text>
-      <Flex
-        direction="column"
-        border="2px solid #ce1567"
-        w={['20rem', '27rem']}
-        px={['1rem', '2rem']}
-        py={['1rem', '2rem']}
-        borderRadius="0.8rem"
-        mb="1rem"
-      >
+      </h1>
+      <div className="flex flex-col border-2 border-[#ce1567] w-80 lg:w-[27rem] px-4 lg:px-8 py-4 lg:py-8 rounded-xl mb-4">
         <form onSubmit={onSubmit}>
-          {/* Username and Phone */}
-          <Flex gap="2rem">
-            <Box mb={['1rem', '1.5rem']}>
-              <Text mb="0.5rem" fontSize="1.1rem">
+          {}
+          <div className="flex gap-8">
+            <div className="mb-4 lg:mb-6">
+              <label className="block mb-2 text-lg">
                 Username
-              </Text>
-              <Box bg="#ffffff" borderRadius="0.4rem">
-                <Input
+              </label>
+              <div className="bg-white rounded-md">
+                <input
                   type="text"
-                  focusBorderColor="#ce1567"
-                  bg="#ecedf6"
+                  className="w-full p-3 bg-[#ecedf6] border-2 border-transparent focus:border-[#ce1567] rounded-md outline-none"
                   id="username"
                   name="username"
                   ref={usernameRef}
                   placeholder="Name..."
                 />
-              </Box>
-            </Box>
-            <Box mb={['1rem', '1.5rem']}>
-              <Text mb="0.5rem" fontSize="1.1rem">
+              </div>
+            </div>
+            <div className="mb-4 lg:mb-6">
+              <label className="block mb-2 text-lg">
                 Phone
-              </Text>
-              <Box bg="#ffffff" borderRadius="0.4rem">
-                <Input
+              </label>
+              <div className="bg-white rounded-md">
+                <input
                   type="text"
-                  focusBorderColor="#ce1567"
-                  bg="#ecedf6"
+                  className="w-full p-3 bg-[#ecedf6] border-2 border-transparent focus:border-[#ce1567] rounded-md outline-none"
                   id="phone_number"
                   name="phone_number"
                   ref={phoneRef}
                   placeholder="Phone..."
                 />
-              </Box>
-            </Box>
-          </Flex>
-          {/* Email */}
-          <Box mb={['1rem', '1.5rem']}>
-            <Text mb="0.5rem" fontSize="1.1rem">
+              </div>
+            </div>
+          </div>
+          
+          {}
+          <div className="mb-4 lg:mb-6">
+            <label className="block mb-2 text-lg">
               Email
-            </Text>
-            <Box bg="#ffffff" borderRadius="0.4rem">
-              <Input
+            </label>
+            <div className="bg-white rounded-md">
+              <input
                 type="email"
-                focusBorderColor="#ce1567"
-                bg="#ecedf6"
+                className="w-full p-3 bg-[#ecedf6] border-2 border-transparent focus:border-[#ce1567] rounded-md outline-none"
                 id="email"
                 name="email"
                 ref={emailRef}
                 placeholder="Email..."
               />
-            </Box>
-          </Box>
-          {/* Password */}
-          <Box mb={['1rem', '1.5rem']}>
-            <Text mb="0.5rem" fontSize="1.1rem">
+            </div>
+          </div>
+          
+          {}
+          <div className="mb-4 lg:mb-6">
+            <label className="block mb-2 text-lg">
               Password
-            </Text>
-            <Box bg="#ffffff" borderRadius="0.4rem">
-              <InputGroup>
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  focusBorderColor="#ce1567"
-                  bg="#ecedf6"
-                  id="password"
-                  name="password"
-                  ref={passwordRef}
-                  placeholder="Password..."
-                />
-                <InputRightElement
-                  onClick={() => {
-                    setShowPassword(!showPassword);
-                  }}
-                >
-                  {showPassword ? (
-                    <BiHide
-                      style={{ width: '20px', height: '20px' }}
-                      color="#3d3d3d"
-                    />
-                  ) : (
-                    <BiShow
-                      style={{ width: '20px', height: '20px' }}
-                      color="#3d3d3d"
-                    />
-                  )}
-                </InputRightElement>
-              </InputGroup>
-            </Box>
-          </Box>
-          {/* Confirm Password */}
-          <Box mb={['1rem', '1.5rem']}>
-            <Text mb="0.5rem" fontSize="1.1rem">
+            </label>
+            <div className="bg-white rounded-md relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className="w-full p-3 pr-12 bg-[#ecedf6] border-2 border-transparent focus:border-[#ce1567] rounded-md outline-none"
+                id="password"
+                name="password"
+                ref={passwordRef}
+                placeholder="Password..."
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}
+              >
+                {showPassword ? (
+                  <BiHide
+                    style={{ width: '20px', height: '20px' }}
+                    color="#3d3d3d"
+                  />
+                ) : (
+                  <BiShow
+                    style={{ width: '20px', height: '20px' }}
+                    color="#3d3d3d"
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+          {}
+          <div className="mb-4 lg:mb-6">
+            <label className="block mb-2 text-lg">
               Confirm Password
-            </Text>
-            <Box bg="#ffffff" borderRadius="0.4rem">
-              <InputGroup>
-                <Input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  focusBorderColor="#ce1567"
-                  bg="#ecedf6"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  ref={confirmPasswordRef}
-                  placeholder="Confirm Password..."
-                />
-                <InputRightElement
-                  onClick={() => {
-                    setShowConfirmPassword(!showConfirmPassword);
-                  }}
-                >
-                  {showConfirmPassword ? (
-                    <BiHide
-                      style={{ width: '20px', height: '20px' }}
-                      color="#3d3d3d"
-                    />
-                  ) : (
-                    <BiShow
-                      style={{ width: '20px', height: '20px' }}
-                      color="#3d3d3d"
-                    />
-                  )}
-                </InputRightElement>
-              </InputGroup>
-            </Box>
-          </Box>
-          <Box mb={['1rem', '1.5rem']}>
-            <Text mb="0.5rem" fontSize="1.1rem">
+            </label>
+            <div className="bg-white rounded-md relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                className="w-full p-3 pr-12 bg-[#ecedf6] border-2 border-transparent focus:border-[#ce1567] rounded-md outline-none"
+                id="confirmPassword"
+                name="confirmPassword"
+                ref={confirmPasswordRef}
+                placeholder="Confirm Password..."
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                onClick={() => {
+                  setShowConfirmPassword(!showConfirmPassword);
+                }}
+              >
+                {showConfirmPassword ? (
+                  <BiHide
+                    style={{ width: '20px', height: '20px' }}
+                    color="#3d3d3d"
+                  />
+                ) : (
+                  <BiShow
+                    style={{ width: '20px', height: '20px' }}
+                    color="#3d3d3d"
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+          <div className="mb-4 lg:mb-6">
+            <label className="block mb-2 text-lg">
               Select Role
-            </Text>
-            <Box bg="#ffffff" borderRadius="0.4rem">
-              <Select
-                focusBorderColor="#ce1567"
-                bg="#ecedf6"
+            </label>
+            <div className="bg-white rounded-md">
+              <select
+                className="w-full p-3 bg-[#ecedf6] border-2 border-transparent focus:border-[#ce1567] rounded-md outline-none"
                 id="role"
                 name="role"
                 ref={roleRef}
-                placeholder="Select Role"
-                defaultValue=""
               >
-                
+                <option value="" disabled selected>
+                  Select Role
+                </option>
                 <option value="launderer">Launderer</option>
                 <option value="student">Student</option>
-              </Select>
-            </Box>
-          </Box>
-          <Center>
+              </select>
+            </div>
+          </div>
+          <div className="flex justify-center">
             {loading ? (
-              <Button isLoading loadingText="Logging In...">
-                Create Account
-              </Button>
+              <button
+                className="px-8 py-3 bg-[#ce1567] text-white rounded-md text-base font-medium tracking-wider cursor-not-allowed opacity-50"
+                disabled
+              >
+                Creating Account...
+              </button>
             ) : (
-              <Button
+              <button
                 type="submit"
-                letterSpacing={1}
-                mt={['1rem', '']}
-                px="2rem"
-                fontSize="1rem"
-                bg="#ce1567"
-                color="white"
-                _hover={{
-                  bg: '',
-                }}
-                rightIcon={<HiArrowLongRight color="#ffffff" size="1.5rem" />}
+                className="flex items-center gap-3 px-8 py-3 bg-[#ce1567] text-white rounded-md text-base font-medium tracking-wider hover:bg-[#a0114d] transition-colors"
               >
                 Create Account
-              </Button>
+                <HiArrowLongRight color="#ffffff" size="1.5rem" />
+              </button>
             )}
-          </Center>
+          </div>
         </form>
-      </Flex>
-      <Text textAlign="center" fontSize={['1.1rem', '1.2rem']}>
+      </div>
+      <p className="text-center text-lg lg:text-xl">
         Already have an account?{' '}
         <span
           style={{
@@ -315,7 +281,7 @@ export default function SignupForm() {
         >
           <Link to="/login">Log In</Link>
         </span>
-      </Text>
-    </Stack>
+      </p>
+    </div>
   );
 }

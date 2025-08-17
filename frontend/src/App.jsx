@@ -27,12 +27,10 @@ function App() {
       <Route
         path="/OrderList"
         element={<OrderList />}
-        // element={isLoading ? <PreLoader /> : <OrderList />}
       />
       <Route
         path="/CheckoutPage"
         element={<CheckoutPage />}
-        // element={isLoading ? <PreLoader /> : <CheckoutPage />}
       />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

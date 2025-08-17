@@ -5,7 +5,7 @@ const testRazorpay = async () => {
   try {
     console.log('🔄 Testing Razorpay integration...');
     
-    // Check if environment variables are set
+    
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_SECRET) {
       throw new Error('Razorpay keys not found in environment variables');
     }
@@ -18,9 +18,9 @@ const testRazorpay = async () => {
       key_secret: process.env.RAZORPAY_SECRET,
     });
 
-    // Test order creation
+    
     const options = {
-      amount: 5000, // amount in paise (₹50.00)
+      amount: 5000, 
       currency: 'INR',
       receipt: 'test_order_' + Date.now(),
       notes: {
@@ -37,11 +37,11 @@ const testRazorpay = async () => {
       status: order.status
     });
     
-    // Test fetching order
+    
     const fetchedOrder = await razorpay.orders.fetch(order.id);
     console.log('✅ Order Fetched Successfully:', fetchedOrder.id);
     
-    // Test payment methods (this will list available payment methods)
+    
     try {
       const methods = await razorpay.methods.all();
       console.log('✅ Payment methods available:', methods ? 'Yes' : 'No');

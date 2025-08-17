@@ -4,15 +4,15 @@ axios.defaults.withCredentials = true;
 const dev_env = import.meta.env.VITE_DEV_ENV;
 const API_URL =
   dev_env === 'development'
-    ? 'http://localhost:4000'
-    : 'https://laundryhub-api.vercel.app';
+    ? 'http:
+    : 'https:
 
 const login = (credentials) => {
   return axios.post(`${API_URL}/login`, credentials);
 };
 
 const forgotPassword = (email) => {
-  return axios.post(`${API_URL}/forgotpassword`, { email });
+  return axios.post(`${API_URL}/forgot-password`, { email });
 };
 const signup = (credentials) => {
   return axios.post(`${API_URL}/signup`, credentials);

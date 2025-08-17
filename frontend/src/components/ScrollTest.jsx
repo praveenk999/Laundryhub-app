@@ -1,9 +1,6 @@
-// ScrollTest.jsx - Test component to verify scrolling behavior
 import React from 'react';
-import { Box, VStack, Text, Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
 
 const ScrollTest = () => {
-  // Generate test data
   const testOrders = Array.from({ length: 50 }, (_, i) => ({
     id: `order_${i + 1}`,
     total: Math.floor(Math.random() * 500) + 100,
@@ -13,64 +10,40 @@ const ScrollTest = () => {
   }));
 
   return (
-    <VStack align="start" gap={4} ml="8rem" h="100vh" overflow="hidden">
-      <Text fontSize="2rem" fontWeight="bold">
+    <div className="flex flex-col items-start gap-4 ml-32 h-screen overflow-hidden">
+      <h1 className="text-4xl font-bold">
         Scroll Test - 50 Orders
-      </Text>
+      </h1>
       
-      <Box
-        w="75vw"
-        h="calc(100vh - 200px)"
-        overflowX="auto"
-        overflowY="auto"
-        border="2px solid #e2e8f0"
-        borderRadius="md"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: '#f1f1f1',
-            borderRadius: '10px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: '#888',
-            borderRadius: '10px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            background: '#555',
-          },
-        }}
-      >
-        <Table variant="simple" size="sm">
-          <Thead position="sticky" top={0} bg="white" zIndex={1}>
-            <Tr>
-              <Th>Order ID</Th>
-              <Th>Total</Th>
-              <Th>Date</Th>
-              <Th>Items</Th>
-              <Th>Status</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
+      <div className="w-[75vw] h-[calc(100vh-200px)] overflow-auto border-2 border-gray-300 rounded-md scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+        <table className="w-full text-sm">
+          <thead className="sticky top-0 bg-white z-10">
+            <tr className="border-b">
+              <th className="p-2 text-left font-semibold">Order ID</th>
+              <th className="p-2 text-left font-semibold">Total</th>
+              <th className="p-2 text-left font-semibold">Date</th>
+              <th className="p-2 text-left font-semibold">Items</th>
+              <th className="p-2 text-left font-semibold">Status</th>
+            </tr>
+          </thead>
+          <tbody>
             {testOrders.map((order) => (
-              <Tr key={order.id}>
-                <Td>{order.id}</Td>
-                <Td>₹{order.total}</Td>
-                <Td>{order.date}</Td>
-                <Td>{order.items}</Td>
-                <Td>{order.status}</Td>
-              </Tr>
+              <tr key={order.id} className="border-b hover:bg-gray-50">
+                <td className="p-2">{order.id}</td>
+                <td className="p-2">₹{order.total}</td>
+                <td className="p-2">{order.date}</td>
+                <td className="p-2">{order.items}</td>
+                <td className="p-2">{order.status}</td>
+              </tr>
             ))}
-          </Tbody>
-        </Table>
-      </Box>
+          </tbody>
+        </table>
+      </div>
       
-      <Text fontSize="sm" color="gray.500">
+      <p className="text-sm text-gray-500">
         ✅ If you can scroll through all 50 orders, scrolling is working!
-      </Text>
-    </VStack>
+      </p>
+    </div>
   );
 };
 
